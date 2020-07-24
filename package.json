@@ -32,8 +32,9 @@
     "dct": "^0.1.0",
     "fftjs": "0.0.4",
     "parcel-bundler": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.4.3",
-    "parcel-plugin-inline-worker": "https://github.com/damienlaine/parcel-plugin-inline-worker.git"
+    "parcel-plugin-inline-worker": "file:parcel/parcel-plugin-inline-worker",
+    "parcel-plugin-inline-wasm": "file:parcel/parcel-plugin-inline-wasm",
+    "parcel-plugin-static-files-copy": "^2.4.3"
   },
   "staticFiles": {
     "staticPath": [
