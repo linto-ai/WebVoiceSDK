@@ -1,0 +1,123 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Playback tests</title>
+    <style>
+        textarea {
+            font-size: .8rem;
+            letter-spacing: 1px;
+        }
+
+        textarea {
+            display: block;
+            padding: 5px;
+            line-height: 1.5;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 1px #999;
+        }
+
+        div {
+            display: inline-block;
+        }
+
+        .led-box {
+            height: 30px;
+            width: 25%;
+            margin: 10px 0;
+            display:inline;
+        }
+
+        .led-box p {
+            font-size: 12px;
+            text-align: center;
+            margin: 1em;
+        }
+
+        .led-red {
+            margin: 0 auto;
+            width: 24px;
+            height: 24px;
+            background-color: #F00;
+            border-radius: 50%;
+            box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+            -webkit-animation: blinkRed 0.5s infinite;
+            -moz-animation: blinkRed 0.5s infinite;
+            -ms-animation: blinkRed 0.5s infinite;
+            -o-animation: blinkRed 0.5s infinite;
+            animation: blinkRed 0.5s infinite;
+        }
+
+        @keyframes blinkRed {
+            from {
+                background-color: #F00;
+            }
+
+            50% {
+                background-color: #A00;
+                box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;
+            }
+
+            to {
+                background-color: #F00;
+            }
+        }
+
+        .led-green {
+            margin: 0 auto;
+            width: 24px;
+            height: 24px;
+            background-color: #ABFF00;
+            border-radius: 50%;
+            box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
+        }
+    </style>
+    <script src="index.js" defer></script>
+
+</head>
+
+<body>
+    <div>
+        <label for="mic">Mic options :</label>
+        <button id="start">Start mic</button>
+        <button id="stop">stop mic</button>
+        <textarea id="mic" rows="10" cols="50"></textarea>
+    </div>
+    <hr />
+    <div>
+        <label for="downsampler">Downsampling options :</label>
+        <input type="checkbox" id="useDownsampler" name="useDownsampler">Use downsampler on native audio frames</input>
+        <textarea id="downsampler" rows="10" cols="50"></textarea>
+    </div>
+    <hr />
+    <div>
+        <div class="led-box">
+            <div id="VADLed" class="led-green" style="display: none;"></div>
+        </div>
+        <label for="useVAD">VAD options :</label>
+        <input type="checkbox" id="useVAD" name="useVAD">Use VAD on native audio frames</input>
+        <textarea id="VAD" rows="10" cols="50"></textarea>
+    </div>
+    <hr />
+    <div>
+        <label for="useSpeechPreEmphasis">Speech Preemphasis options :</label>
+        <input type="checkbox" id="useSpeechPreEmphasis" name="useSpeechPreEmphasis">Use Speech Preemphasis on native or downsampled audio frames</input>
+        <textarea id="speechPreEmphasis" rows="10" cols="50"></textarea>
+    </div>
+    <hr />
+    <div>
+        <label for="useFeatureExtraction">Speech Preemphasis options :</label>
+        <input type="checkbox" id="useFeatureExtraction" name="useFeatureExtraction">Use audio features extraction (MFCC) on downsampled or speech pre-emphased audio frames </input>
+        <textarea id="featureExtraction" rows="10" cols="50"></textarea>
+    </div>
+    <hr />
+    <div>
+        <label for="useHotWord">HotWord inference :</label>
+        <input type="checkbox" id="useHotWord" name="useHotWord">Infer HotWord with extracted audio Features</input>
+        <textarea id="hotWord" rows="10" cols="50"></textarea>
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+{
+  "name": "web-speech-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/web-speech-sdk/webspeech.js",
+    "build-inline": "parcel build src/web-speech-sdk/webspeech.inline.js",
+    "try": "parcel example/index.html",
+    "try-inline": "parcel example-inline/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/damienlaine/webvoicesdk.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/damienlaine/webvoicesdk/issues"
+  },
+  "homepage": "https://github.com/damienlaine/webvoicesdk#readme",
+  "dependencies": {
+    "@tensorflow/tfjs": "^2.0.1",
+    "@tensorflow/tfjs-backend-cpu": "^2.0.1",
+    "@tensorflow/tfjs-backend-wasm": "^2.0.1",
+    "@tensorflow/tfjs-backend-webgl": "^2.0.1",
+    "@tensorflow/tfjs-core": "^2.0.1",
+    "rnnoise-wasm": "github:jitsi/rnnoise-wasm.git"
+  },
+  "devDependencies": {
+    "dct": "^0.1.0",
+    "fftjs": "0.0.4",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.4.3",
+    "parcel-plugin-inline-worker": "https://github.com/damienlaine/parcel-plugin-inline-worker.git"
+  },
+  "staticFiles": {
+    "staticPath": [
+      {
+        "staticOutDir": "hotwords",
+        "staticPath": "hotwords"
+      },
+      {
+        "staticPath": "node_modules/rnnoise-wasm/dist",
+        "excludeGlob": "**/*.+(!(wasm))"
+      },
+      {
+        "staticPath": "node_modules/@tensorflow/tfjs-backend-wasm/dist",
+        "excludeGlob": [
+          "**/*.+(!(wasm))",
+          "/kernels"
+        ]
+      }
+    ]
+  },
+  "browserslist": [
+    "since 2017-06"
+  ]
+}
