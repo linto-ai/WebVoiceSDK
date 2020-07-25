@@ -8,7 +8,7 @@
     "build": "parcel build src/web-speech-sdk/webspeech.js",
     "build-inline": "parcel build src/web-speech-sdk/webspeech.inline.js",
     "try": "parcel example/index.html",
-    "try-inline": "parcel example-inline/index.html"
+    "try-inline": "parcel example-inline/index.html --no-cache"
   },
   "repository": {
     "type": "git",

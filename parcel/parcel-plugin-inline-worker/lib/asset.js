@@ -17,12 +17,12 @@ class InlineWorkerAsset extends JSAsset {
     // Return JS with inlined Worker
     if (this.isWorkerJs) {
 
-      //const code = original[0].value;
+      const code = original[0].value;
       
       return {
         js: `
-          module.exports.init = function() { 
-            const blob = new Blob([${JSON.stringify(original)}], { type: 'text/javascript' });
+          module.exports.init = function() {
+            const blob = new Blob([${JSON.stringify(code)}], { type: 'text/javascript' });
             const workerUrl = URL.createObjectURL(blob);
             
             return new Worker(workerUrl) 
