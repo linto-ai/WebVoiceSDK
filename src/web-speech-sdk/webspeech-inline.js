@@ -7,6 +7,8 @@ import {
     Rnnoise
 } from './rnnoise-inline/index.js'
 
+import * as tfWasmBinBblob from '../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm'
+
 import {
     hotWordHandler,
     downSamplerHandler,
@@ -114,7 +116,8 @@ class WebSpeech extends EventTarget {
             this.hotWord = hotwordInline.init()
             this.hotWord.mfccBuffer = [] // when ready --> infer
             this.hotWord.postMessage({
-                method: "configure"
+                method: "configure",
+                wasmPath: tfWasmBinBblob.wasmUrl()
             })
             this.addEventListener("mfcc", hotWordHandler)
         }

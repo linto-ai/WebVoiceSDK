@@ -8,10 +8,10 @@ onmessage = async function (msg) {
             infer(msg.data.features)
             break
         case "configure":
-            await tf.wasm.setWasmPath('http://localhost:1234/tfjs-backend-wasm.wasm')
+            await tf.wasm.setWasmPath(msg.data.wasmPath)
             await tf.setBackend('wasm');
-            model = await tf.loadLayersModel("http://localhost:1234/hotwords/linto/1/model.json")
             console.log(tf.getBackend())
+            model = await tf.loadLayersModel("http://localhost:1234/hotwords/linto/1/model.json")
             let test = [
                 [-4.38008932, 1.76596543, -0.0308356101, -0.156199529, -0.397121688, -0.783466278, -0.787654801, -0.419249497, -0.120861649, 0.260230085, 0.607665989, 0.850428494, 0.916728505],
                 [-4.09551338, 2.25335205, 0.0533512501, 0.0725439359, -1.01972772, -1.44374983, -1.3206918, -0.675359225, -0.558259242, -0.351135791, 0.274224135, 0.259443871, 0.904525084],

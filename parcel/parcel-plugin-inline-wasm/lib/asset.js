@@ -8,6 +8,7 @@ class WASMAsset extends Asset{
   constructor(name, pkg, options) {
     super(name, pkg, options);
     this.type = 'wasm';
+    console.log(name)
     this.encoding = null;
   }
 
