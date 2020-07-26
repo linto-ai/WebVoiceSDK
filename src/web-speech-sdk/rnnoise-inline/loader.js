@@ -1,3 +1,6 @@
+import * as wasmBinBblob from '../../../node_modules/rnnoise-wasm/dist/rnnoise.wasm'
+// slight modification from vendor file to enable loading of wasm from blob
+// compare with vendor file in ../rnnoise/loader.js
 
 var Module = (function () {
     var _scriptDir = typeof document !== "undefined" && document.currentScript ? document.currentScript.src : undefined;
@@ -33,7 +36,6 @@ var Module = (function () {
         ENVIRONMENT_IS_NODE = typeof process === "object" && typeof process.versions === "object" && typeof process.versions.node === "string";
         ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
         var scriptDirectory = "";
-
         function locateFile(path) {
             if (Module["locateFile"]) {
                 return Module["locateFile"](path, scriptDirectory);
@@ -54,7 +56,8 @@ var Module = (function () {
                 scriptDirectory = scriptDirectory.substr(0, scriptDirectory.lastIndexOf("/") + 1);
             } else {
                 scriptDirectory = "";
-            } {
+            }
+            {
                 read_ = function shell_read(url) {
                     var xhr = new XMLHttpRequest();
                     xhr.open("GET", url, false);
@@ -88,7 +91,8 @@ var Module = (function () {
             setWindowTitle = function (title) {
                 document.title = title;
             };
-        } else {}
+        } else {
+        }
         var out = Module["print"] || console.log.bind(console);
         var err = Module["printErr"] || console.warn.bind(console);
         for (key in moduleOverrides) {
@@ -108,15 +112,10 @@ var Module = (function () {
             err("no native wasm support detected");
         }
         var wasmMemory;
-        var wasmTable = new WebAssembly.Table({
-            initial: 1,
-            maximum: 1 + 0,
-            element: "anyfunc"
-        });
+        var wasmTable = new WebAssembly.Table({ initial: 1, maximum: 1 + 0, element: "anyfunc" });
         var ABORT = false;
         var EXITSTATUS = 0;
         var WASM_PAGE_SIZE = 65536;
-
         function alignUp(x, multiple) {
             if (x % multiple > 0) {
                 x += multiple - (x % multiple);
@@ -124,7 +123,6 @@ var Module = (function () {
             return x;
         }
         var buffer, HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64;
-
         function updateGlobalBufferAndViews(buf) {
             buffer = buf;
             Module["HEAP8"] = HEAP8 = new Int8Array(buf);
@@ -142,10 +140,7 @@ var Module = (function () {
         if (Module["wasmMemory"]) {
             wasmMemory = Module["wasmMemory"];
         } else {
-            wasmMemory = new WebAssembly.Memory({
-                initial: INITIAL_INITIAL_MEMORY / WASM_PAGE_SIZE,
-                maximum: 2147483648 / WASM_PAGE_SIZE
-            });
+            wasmMemory = new WebAssembly.Memory({ initial: INITIAL_INITIAL_MEMORY / WASM_PAGE_SIZE, maximum: 2147483648 / WASM_PAGE_SIZE });
         }
         if (wasmMemory) {
             buffer = wasmMemory.buffer;
@@ -153,7 +148,6 @@ var Module = (function () {
         INITIAL_INITIAL_MEMORY = buffer.byteLength;
         updateGlobalBufferAndViews(buffer);
         HEAP32[DYNAMICTOP_PTR >> 2] = DYNAMIC_BASE;
-
         function callRuntimeCallbacks(callbacks) {
             while (callbacks.length > 0) {
                 var callback = callbacks.shift();
@@ -178,7 +172,6 @@ var Module = (function () {
         var __ATMAIN__ = [];
         var __ATPOSTRUN__ = [];
         var runtimeInitialized = false;
-
         function preRun() {
             if (Module["preRun"]) {
                 if (typeof Module["preRun"] == "function") Module["preRun"] = [Module["preRun"]];
@@ -188,16 +181,13 @@ var Module = (function () {
             }
             callRuntimeCallbacks(__ATPRERUN__);
         }
-
         function initRuntime() {
             runtimeInitialized = true;
             callRuntimeCallbacks(__ATINIT__);
         }
-
         function preMain() {
             callRuntimeCallbacks(__ATMAIN__);
         }
-
         function postRun() {
             if (Module["postRun"]) {
                 if (typeof Module["postRun"] == "function") Module["postRun"] = [Module["postRun"]];
@@ -207,25 +197,21 @@ var Module = (function () {
             }
             callRuntimeCallbacks(__ATPOSTRUN__);
         }
-
         function addOnPreRun(cb) {
             __ATPRERUN__.unshift(cb);
         }
-
         function addOnPostRun(cb) {
             __ATPOSTRUN__.unshift(cb);
         }
         var runDependencies = 0;
         var runDependencyWatcher = null;
         var dependenciesFulfilled = null;
-
         function addRunDependency(id) {
             runDependencies++;
             if (Module["monitorRunDependencies"]) {
                 Module["monitorRunDependencies"](runDependencies);
             }
         }
-
         function removeRunDependency(id) {
             runDependencies--;
             if (Module["monitorRunDependencies"]) {
@@ -245,7 +231,6 @@ var Module = (function () {
         }
         Module["preloadedImages"] = {};
         Module["preloadedAudios"] = {};
-
         function abort(what) {
             if (Module["onAbort"]) {
                 Module["onAbort"](what);
@@ -258,20 +243,17 @@ var Module = (function () {
             what = "abort(" + what + "). Build with -s ASSERTIONS=1 for more info.";
             throw new WebAssembly.RuntimeError(what);
         }
-
         function hasPrefix(str, prefix) {
             return String.prototype.startsWith ? str.startsWith(prefix) : str.indexOf(prefix) === 0;
         }
         var dataURIPrefix = "data:application/octet-stream;base64,";
-
         function isDataURI(filename) {
             return hasPrefix(filename, dataURIPrefix);
         }
-        var wasmBinaryFile = "rnnoise.wasm";
-        if (!isDataURI(wasmBinaryFile)) {
-            wasmBinaryFile = locateFile(wasmBinaryFile);
-        }
-
+        var wasmBinaryFile = wasmBinBblob.wasmUrl()//"rnnoise.wasm";
+        // if (!isDataURI(wasmBinaryFile)) {
+        //     wasmBinaryFile = locateFile(wasmBinaryFile);
+        // }
         function getBinary() {
             try {
                 if (wasmBinary) {
@@ -286,12 +268,9 @@ var Module = (function () {
                 abort(err);
             }
         }
-
         function getBinaryPromise() {
             if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) && typeof fetch === "function") {
-                return fetch(wasmBinaryFile, {
-                        credentials: "same-origin"
-                    })
+                return fetch(wasmBinaryFile, { credentials: "same-origin" })
                     .then(function (response) {
                         if (!response["ok"]) {
                             throw "failed to load wasm binary file at '" + wasmBinaryFile + "'";
@@ -306,26 +285,21 @@ var Module = (function () {
                 resolve(getBinary());
             });
         }
-
         function createWasm() {
-            var info = {
-                a: asmLibraryArg
-            };
-
+            var info = { a: asmLibraryArg };
             function receiveInstance(instance, module) {
                 var exports = instance.exports;
                 Module["asm"] = exports;
                 removeRunDependency("wasm-instantiate");
             }
             addRunDependency("wasm-instantiate");
-
             function receiveInstantiatedSource(output) {
                 receiveInstance(output["instance"]);
             }
-
             function instantiateArrayBuffer(receiver) {
                 return getBinaryPromise()
                     .then(function (binary) {
+                        console.log(binary)
                         return WebAssembly.instantiate(binary, info);
                     })
                     .then(receiver, function (reason) {
@@ -333,12 +307,9 @@ var Module = (function () {
                         abort(reason);
                     });
             }
-
             function instantiateAsync() {
-                if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && typeof fetch === "function") {
-                    fetch(wasmBinaryFile, {
-                        credentials: "same-origin"
-                    }).then(function (response) {
+                if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && typeof fetch === "function") {
+                    fetch(wasmBinaryFile, { credentials: "same-origin" }).then(function (response) {
                         var result = WebAssembly.instantiateStreaming(response, info);
                         return result.then(receiveInstantiatedSource, function (reason) {
                             err("wasm streaming compile failed: " + reason);
@@ -367,15 +338,12 @@ var Module = (function () {
                 ___wasm_call_ctors();
             },
         });
-
         function _emscripten_memcpy_big(dest, src, num) {
             HEAPU8.copyWithin(dest, src, src + num);
         }
-
         function _emscripten_get_heap_size() {
             return HEAPU8.length;
         }
-
         function emscripten_realloc_buffer(size) {
             try {
                 wasmMemory.grow((size - buffer.byteLength + 65535) >>> 16);
@@ -383,7 +351,6 @@ var Module = (function () {
                 return 1;
             } catch (e) {}
         }
-
         function _emscripten_resize_heap(requestedSize) {
             requestedSize = requestedSize >>> 0;
             var oldSize = _emscripten_get_heap_size();
@@ -404,12 +371,7 @@ var Module = (function () {
             }
             return false;
         }
-        var asmLibraryArg = {
-            a: _emscripten_memcpy_big,
-            b: _emscripten_resize_heap,
-            memory: wasmMemory,
-            table: wasmTable
-        };
+        var asmLibraryArg = { a: _emscripten_memcpy_big, b: _emscripten_resize_heap, memory: wasmMemory, table: wasmTable };
         var asm = createWasm();
         var ___wasm_call_ctors = (Module["___wasm_call_ctors"] = function () {
             return (___wasm_call_ctors = Module["___wasm_call_ctors"] = Module["asm"]["c"]).apply(null, arguments);
@@ -437,7 +399,6 @@ var Module = (function () {
             if (!calledRun) run();
             if (!calledRun) dependenciesFulfilled = runCaller;
         };
-
         function run(args) {
             args = args || arguments_;
             if (runDependencies > 0) {
@@ -445,7 +406,6 @@ var Module = (function () {
             }
             preRun();
             if (runDependencies > 0) return;
-
             function doRun() {
                 if (calledRun) return;
                 calledRun = true;

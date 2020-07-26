@@ -2,13 +2,10 @@ import downSamplerInline from './workers-inline/downsampler.worker.js'
 import speechPreEmphasisInline from './workers-inline/speechpreemphasis.worker.js'
 import featureExtractorInline from './workers-inline/features.worker.js'
 import hotwordInline from './workers-inline/hotword.worker.js'
-import * as test from '../../node_modules/rnnoise-wasm/dist/rnnoise.wasm'
-console.log(test.wasmUrl())
-
 
 import {
     Rnnoise
-} from './rnnoise/index.js'
+} from './rnnoise-inline/index.js'
 
 import {
     hotWordHandler,
