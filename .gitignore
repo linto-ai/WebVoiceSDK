@@ -1,5 +1,5 @@
-**/dist
-!**/dist/.gitkeep
+.vscode
+**/dev-build
 **/node_modules
 **/.cache
 package-lock.json

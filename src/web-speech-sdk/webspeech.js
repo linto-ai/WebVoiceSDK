@@ -1,6 +1,13 @@
+import downSamplerInline from './workers/downsampler.blob.js'
+import speechPreEmphasisInline from './workers/speechpreemphasis.blob.js'
+import featureExtractorInline from './workers/features.blob.js'
+import hotwordInline from './workers/hotword.blob.js'
+
 import {
     Rnnoise
 } from './rnnoise/index.js'
+
+import * as tfWasm from '../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm'
 
 import {
     hotWordHandler,
@@ -25,7 +32,7 @@ class WebSpeech extends EventTarget {
         Int16Convert = false
     } = {}) {
         if (!this.downSampler && this.mic.status == "online") {
-            this.downSampler = new Worker('./workers/downsampler.worker.js')
+            this.downSampler = downSamplerInline.init()
             this.downSampler.postMessage({
                 method: "configure",
                 nativeSampleRate: this.mic.mediaStreamSource.context.sampleRate,
@@ -67,7 +74,7 @@ class WebSpeech extends EventTarget {
         discardFirstBand = true
     } = {}) {
         if (!this.featureExtractor && this.mic.status == "online") {
-            this.featureExtractor = new Worker('./workers/features.worker.js')
+            this.featureExtractor = featureExtractorInline.init()
             //offloads work to this.featureExtractor
             this.featureExtractor.postMessage({
                 method: "configure",
@@ -106,10 +113,11 @@ class WebSpeech extends EventTarget {
 
     hookHotWord() {
         if (!this.hotWord) {
-            this.hotWord = new Worker('./workers/hotword.worker.js')
+            this.hotWord = hotwordInline.init()
             this.hotWord.mfccBuffer = [] // when ready --> infer
             this.hotWord.postMessage({
-                method: "configure"
+                method: "configure",
+                wasmPath: tfWasm.forInstanciate()
             })
             this.addEventListener("mfcc", hotWordHandler)
         }
@@ -119,7 +127,7 @@ class WebSpeech extends EventTarget {
         audioFrameEvent = "downSampledAudioFrame"
     } = {}) {
         if (!this.speechPreEmphaser && this.mic.status == "online") {
-            this.speechPreEmphaser = new Worker('./workers/speechpreemphasis.worker.js')
+            this.speechPreEmphaser = speechPreEmphasisInline.init()
             this.addEventListener(audioFrameEvent, speechPreEmphasisHandler)
             this.speechPreEmphaser.onmessage = (audioFrame) => {
                 this.dispatchEvent(new CustomEvent("speechPreEmphasedAudioFrame", {

@@ -1,3 +1,7 @@
+import * as wasm from '../../../node_modules/rnnoise-wasm/dist/rnnoise.wasm'
+// slight modification from vendor file to enable loading of wasm from blob
+// compare with vendor file in ../rnnoise/loader.js
+
 var Module = (function () {
     var _scriptDir = typeof document !== "undefined" && document.currentScript ? document.currentScript.src : undefined;
 
@@ -246,10 +250,10 @@ var Module = (function () {
         function isDataURI(filename) {
             return hasPrefix(filename, dataURIPrefix);
         }
-        var wasmBinaryFile = "rnnoise.wasm";
-        if (!isDataURI(wasmBinaryFile)) {
-            wasmBinaryFile = locateFile(wasmBinaryFile);
-        }
+        var wasmBinaryFile = wasm.forInstanciate()//"rnnoise.wasm";
+        // if (!isDataURI(wasmBinaryFile)) {
+        //     wasmBinaryFile = locateFile(wasmBinaryFile);
+        // }
         function getBinary() {
             try {
                 if (wasmBinary) {
@@ -295,6 +299,7 @@ var Module = (function () {
             function instantiateArrayBuffer(receiver) {
                 return getBinaryPromise()
                     .then(function (binary) {
+                        console.log(binary)
                         return WebAssembly.instantiate(binary, info);
                     })
                     .then(receiver, function (reason) {
@@ -303,7 +308,7 @@ var Module = (function () {
                     });
             }
             function instantiateAsync() {
-                if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && typeof fetch === "function") {
+                if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && typeof fetch === "function") {
                     fetch(wasmBinaryFile, { credentials: "same-origin" }).then(function (response) {
                         var result = WebAssembly.instantiateStreaming(response, info);
                         return result.then(receiveInstantiatedSource, function (reason) {

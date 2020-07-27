@@ -1,4 +1,5 @@
 import webSpeech from '../src/web-speech-sdk/webspeech'
+
 window.webSpeech = webSpeech
 
 const defaultVADSettings = {
@@ -45,7 +46,7 @@ const audioFrameHandler = function (audioFrame) {
 }
 
 const VADHandler = function (speaking) {
-    speaking.detail ? (document.getElementById("VADLed").classList.add("led-red"),document.getElementById("VADLed").classList.remove("led-green")) : (document.getElementById("VADLed").classList.add("led-green"),document.getElementById("VADLed").classList.remove("led-red"))
+    speaking.detail ? (document.getElementById("VADLed").classList.add("led-red"), document.getElementById("VADLed").classList.remove("led-green")) : (document.getElementById("VADLed").classList.add("led-green"), document.getElementById("VADLed").classList.remove("led-red"))
 }
 
 // "downSampledAudioFrame", "nativeAudioFrame", "emphasedAudioFrame"
@@ -85,7 +86,7 @@ document.getElementById("stop").onclick = () => {
 document.getElementById("useDownsampler").onchange = function () {
     this.checked ? webSpeech.hookDownSampler() : webSpeech.unHookDownSampler()
 }
-document.getElementById("useVAD").onchange = function() {
+document.getElementById("useVAD").onchange = function () {
     if (webSpeech.mic.status == "online") {
         let VADSettings = JSON.parse(document.getElementById('VAD').value)
         document.getElementById("VADLed").setAttribute('style', 'display:inline-block;')

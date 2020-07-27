@@ -4,11 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel src/index.html",
-    "build": "parcel build src/web-speech-sdk/webspeech.js",
-    "build-inline": "parcel build src/web-speech-sdk/webspeech.inline.js",
-    "try": "parcel example/index.html",
-    "try-inline": "parcel example-inline/index.html --no-cache"
+    "build": "parcel build src/index.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webspeechsdk.min.js",
+    "try": "parcel example/index.html --out-dir dev-build --log-level 4 --no-cache"
   },
   "repository": {
     "type": "git",
@@ -20,7 +17,14 @@
     "url": "https://github.com/damienlaine/webvoicesdk/issues"
   },
   "homepage": "https://github.com/damienlaine/webvoicesdk#readme",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "dct": "^0.1.0",
+    "fftjs": "0.0.4",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-blob-wasm": "file:parcel/parcel-plugin-blob-wasm",
+    "parcel-plugin-blob-worker": "file:parcel/parcel-plugin-blob-worker",
+    "parcel-plugin-static-files-copy": "^2.4.3",
     "@tensorflow/tfjs": "^2.0.1",
     "@tensorflow/tfjs-backend-cpu": "^2.0.1",
     "@tensorflow/tfjs-backend-wasm": "^2.0.1",
@@ -28,30 +32,11 @@
     "@tensorflow/tfjs-core": "^2.0.1",
     "rnnoise-wasm": "github:jitsi/rnnoise-wasm.git"
   },
-  "devDependencies": {
-    "dct": "^0.1.0",
-    "fftjs": "0.0.4",
-    "parcel-bundler": "^1.12.4",
-    "parcel-plugin-inline-worker": "file:parcel/parcel-plugin-inline-worker",
-    "parcel-plugin-inline-wasm": "file:parcel/parcel-plugin-inline-wasm",
-    "parcel-plugin-static-files-copy": "^2.4.3"
-  },
   "staticFiles": {
     "staticPath": [
       {
         "staticOutDir": "hotwords",
         "staticPath": "hotwords"
-      },
-      {
-        "staticPath": "node_modules/rnnoise-wasm/dist",
-        "excludeGlob": "**/*.+(!(wasm))"
-      },
-      {
-        "staticPath": "node_modules/@tensorflow/tfjs-backend-wasm/dist",
-        "excludeGlob": [
-          "**/*.+(!(wasm))",
-          "/kernels"
-        ]
       }
     ]
   },
