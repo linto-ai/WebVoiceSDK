@@ -24,21 +24,13 @@
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-blob-wasm": "file:parcel/parcel-plugin-blob-wasm",
     "parcel-plugin-blob-worker": "file:parcel/parcel-plugin-blob-worker",
-    "parcel-plugin-static-files-copy": "^2.4.3",
+    "parcel-plugin-blob-tensorflowjs": "file:parcel/parcel-plugin-blob-tensorflowjs",
     "@tensorflow/tfjs": "^2.0.1",
     "@tensorflow/tfjs-backend-cpu": "^2.0.1",
     "@tensorflow/tfjs-backend-wasm": "^2.0.1",
     "@tensorflow/tfjs-backend-webgl": "^2.0.1",
     "@tensorflow/tfjs-core": "^2.0.1",
     "rnnoise-wasm": "github:jitsi/rnnoise-wasm.git"
-  },
-  "staticFiles": {
-    "staticPath": [
-      {
-        "staticOutDir": "hotwords",
-        "staticPath": "hotwords"
-      }
-    ]
   },
   "browserslist": [
     "since 2017-06"

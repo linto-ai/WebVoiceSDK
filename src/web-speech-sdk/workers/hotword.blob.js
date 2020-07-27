@@ -8,10 +8,16 @@ onmessage = async function (msg) {
             infer(msg.data.features)
             break
         case "configure":
+            console.log("configure hotword")
             await tf.wasm.setWasmPath(msg.data.wasmPath)
             await tf.setBackend('wasm');
-            console.log(tf.getBackend())
-            model = await tf.loadLayersModel("http://localhost:1234/hotwords/linto/1/model.json")
+            const topology = msg.data.topology
+            // topology.weightsManifest[0].paths[0] is the full "blob:http://..." URL to the blobbed tensorflowjs weights bin file
+            const weightRelativeUrl = topology.weightsManifest[0].paths[0].slice(topology.weightsManifest[0].paths[0].lastIndexOf("/")+1)
+            topology.weightsManifest[0].paths[0] = weightRelativeUrl
+            const topologyBlob = new Blob([JSON.stringify(topology)], { type: 'application/json' })
+            topologyBlobUrl = URL.createObjectURL(topologyBlob)
+            model = await tf.loadLayersModel(topologyBlobUrl)
             let test = [
                 [-4.38008932, 1.76596543, -0.0308356101, -0.156199529, -0.397121688, -0.783466278, -0.787654801, -0.419249497, -0.120861649, 0.260230085, 0.607665989, 0.850428494, 0.916728505],
                 [-4.09551338, 2.25335205, 0.0533512501, 0.0725439359, -1.01972772, -1.44374983, -1.3206918, -0.675359225, -0.558259242, -0.351135791, 0.274224135, 0.259443871, 0.904525084],
@@ -57,6 +63,6 @@ function infer(features) {
     tensor = tf.tensor3d(new Array(features))
     const inference = model.predict(tensor)
     const value = inference.dataSync()[0]
-    console.log(value)
+    if (value == 1) console.log("YEAH !")
     //postMessage(value)
 }

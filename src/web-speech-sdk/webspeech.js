@@ -9,6 +9,9 @@ import {
 
 import * as tfWasm from '../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm'
 
+//Hotword model bundling
+import * as lintoModelWeights from "../../hotwords/linto/1/group1-shard1of1.bin"
+
 import {
     hotWordHandler,
     downSamplerHandler,
@@ -115,9 +118,13 @@ class WebSpeech extends EventTarget {
         if (!this.hotWord) {
             this.hotWord = hotwordInline.init()
             this.hotWord.mfccBuffer = [] // when ready --> infer
+            let topology = require("../../hotwords/linto/1/model.json")
+            topology.weightsManifest[0].paths = [lintoModelWeights.weightsURL()]
+            console.log(topology)
             this.hotWord.postMessage({
                 method: "configure",
-                wasmPath: tfWasm.forInstanciate()
+                wasmPath: tfWasm.forInstanciate(),
+                topology,
             })
             this.addEventListener("mfcc", hotWordHandler)
         }
