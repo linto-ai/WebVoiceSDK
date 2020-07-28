@@ -2,13 +2,20 @@ import Node from '../nodes/node.js'
 import Worker from '../workers/downsampler.blob.js'
 
 const handler = function (nodeEvent) {
-    this.downSampler.postMessage({
+    this.worker.postMessage({
         method: "process",
         audioFrame: nodeEvent.detail
     })
 }
 
 export default class DownSampler extends Node {
+
+    static defaultOptions = {
+        targetSampleRate: 16000,
+        targetFrameSize: 512,
+        Int16Convert: false
+    }
+
     constructor({
         targetSampleRate = 16000,
         targetFrameSize = 512,
@@ -18,8 +25,6 @@ export default class DownSampler extends Node {
         this.type = "downSampler"
         this.event = "downSamplerFrame" //emitted
         this.hookableNodeTypes = ["mic"]
-        this.worker = Worker.init()
-        this.handler = handler
         this.options = {
             targetSampleRate,
             targetFrameSize,
@@ -27,8 +32,10 @@ export default class DownSampler extends Node {
         }
     }
 
-    hook(node){
+    hook(node) {
         super.hook(node)
+        this.worker = Worker.init()
+        this.handler = handler
         this.hookedOn = node
         this.worker.postMessage({
             method: "configure",

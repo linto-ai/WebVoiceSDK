@@ -1,7 +1,16 @@
 import Node from '../nodes/node.js'
 
 export default class Mic extends Node {
-    
+    static defaultOptions = {
+        sampleRate: 44100,
+        frameSize: 4096,
+        constraints: {
+            echoCancellation: true,
+            autoGainControl: true,
+            noiseSuppression: true
+        }
+    }
+
     constructor({
         sampleRate = 44100,
         frameSize = 4096,
@@ -13,13 +22,14 @@ export default class Mic extends Node {
     } = {}) {
         super()
         this.type = "mic"
+        this.status = "not-emitting"
         this.event = "micFrame" //emitted
-        this.status = "offline"
-        this.hookableNodeTypes = [] //none
+        this.hookedOn = null
+        this.hookableNodeTypes = [] //none, this node will connect to getUserMedia stream
         this.options = {
             sampleRate,
             frameSize,
-            constraints
+            ...constraints
         }
     }
 
@@ -35,15 +45,15 @@ export default class Mic extends Node {
         this.audioContext = new(window.AudioContext || window.webkitAudioContext)({
             sampleRate: this.options.sampleRate,
         })
+        this.hookedOn = "mediaDevices"
         this.mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
         this.micFrameGenerator = this.audioContext.createScriptProcessor(this.options.frameSize, 1, 1)
-        this.hookedOn = "mediaDevices"
+        return this
     }
 
     start() {
-        if (this.status == "offline") {
+        if (this.status == "not-emitting" && (this.hookedOn == "mediaDevices")) {
             this.micFrameGenerator.onaudioprocess = (audioFrame) => {
-                console.log("frame")
                 const micFrame = audioFrame.inputBuffer.getChannelData(0)
                 this.dispatchEvent(new CustomEvent(this.event, {
                     "detail": micFrame
@@ -51,15 +61,38 @@ export default class Mic extends Node {
             }
             this.mediaStreamSource.connect(this.micFrameGenerator)
             this.micFrameGenerator.connect(this.audioContext.destination)
-            this.status = "online"
+            this.status = "emitting"
         }
         return this
     }
 
-    pause(){
-        this.mediaStreamSource.disconnect()
-        this.micFrameGenerator.disconnect()
+
+    pause() {
+        if (this.status == "emitting" && this.hookedOn == "mediaDevices") {
+            this.mediaStreamSource.disconnect()
+            this.micFrameGenerator.disconnect()
+            this.status = "not-emitting"
+        }
+        return this
     }
 
+    unHook() {
+        if (this.hookedOn == "mediaDevices") {
+            super.unHook()
+            this.stream.getTracks().map((track) => {
+                return track.readyState === 'live' && track.kind === 'audio' ? track.stop() : false
+            })
+            this.pause()
+            delete this.mediaStreamSource
+            delete this.micFrameGenerator
+            this.audioContext.close().then(() => {
+                delete this.stream
+                delete this.audioContext
+                this.status = "not-emitting"
+                this.hookedOn = null
+            })
 
+        }
+        return this
+    }
 }
