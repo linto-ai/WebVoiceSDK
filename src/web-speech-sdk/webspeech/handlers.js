@@ -9,6 +9,7 @@ export const downSamplerHandler = function (audioFrame) {
         audioFrame: audioFrame.detail
     })
 }
+
 export const speechPreEmphasisHandler = function (audioFrame) {
     this.speechPreEmphaser.postMessage({
         method: "process",

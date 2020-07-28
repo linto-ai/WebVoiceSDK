@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "parcel build src/index.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webspeechsdk.min.js",
-    "try": "parcel example/index.html --out-dir dev-build --log-level 4 --no-cache"
+    "try": "parcel example/index.html --out-dir dev-build --log-level 4 --no-cache",
+    "new": "parcel src/web-speech-sdk/index.html --out-dir dev-build --log-level 4 --no-cache"
   },
   "repository": {
     "type": "git",
@@ -19,17 +20,17 @@
   "homepage": "https://github.com/damienlaine/webvoicesdk#readme",
   "dependencies": {},
   "devDependencies": {
-    "dct": "^0.1.0",
-    "fftjs": "0.0.4",
-    "parcel-bundler": "^1.12.4",
-    "parcel-plugin-blob-wasm": "file:parcel/parcel-plugin-blob-wasm",
-    "parcel-plugin-blob-worker": "file:parcel/parcel-plugin-blob-worker",
-    "parcel-plugin-blob-tensorflowjs": "file:parcel/parcel-plugin-blob-tensorflowjs",
     "@tensorflow/tfjs": "^2.0.1",
     "@tensorflow/tfjs-backend-cpu": "^2.0.1",
     "@tensorflow/tfjs-backend-wasm": "^2.0.1",
     "@tensorflow/tfjs-backend-webgl": "^2.0.1",
     "@tensorflow/tfjs-core": "^2.0.1",
+    "dct": "^0.1.0",
+    "fftjs": "0.0.4",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-blob-tensorflowjs": "file:parcel/parcel-plugin-blob-tensorflowjs",
+    "parcel-plugin-blob-wasm": "file:parcel/parcel-plugin-blob-wasm",
+    "parcel-plugin-blob-worker": "file:parcel/parcel-plugin-blob-worker",
     "rnnoise-wasm": "github:jitsi/rnnoise-wasm.git"
   },
   "browserslist": [
