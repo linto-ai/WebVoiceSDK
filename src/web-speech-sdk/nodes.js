@@ -1,9 +1,7 @@
 import DownSampler from './nodes/downsampler.js'
 import Mic from './nodes/mic.js'
+import SpeechPreemphaser from './nodes/speechpreemphasis.js'
 
-class WebSpeechSDK {
-    static downSampler = new DownSampler(DownSampler.defaultOptions)
-    static mic = new Mic(Mic.defaultOptions)
-}
-
-window.WebSpeechSDK = WebSpeechSDK
+window.mic = new Mic(Mic.defaultOptions)
+window.downSampler = new DownSampler(DownSampler.defaultOptions)
+window.s = new SpeechPreemphaser()
