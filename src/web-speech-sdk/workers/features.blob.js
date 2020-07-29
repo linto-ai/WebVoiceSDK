@@ -408,6 +408,7 @@ let discardFirstBand = true
 let bufferSize = 0
 
 onmessage = function (msg) {
+    console.log(msg)
     switch (msg.data.method) {
         case "configure":
             numFilters = msg.data.numFilters

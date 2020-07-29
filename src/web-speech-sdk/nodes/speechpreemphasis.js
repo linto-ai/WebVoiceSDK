@@ -17,4 +17,20 @@ export default class SpeechPreemphaser extends Node {
         this.event = "speechPreemphaserFrame" //emitted
         this.hookableOnNodeTypes = ["mic","downsampler"]
     }
+
+    async start(node){
+        await super.start(node)
+        this.options = {
+            sampleRate: node.sampleRate,
+            frameSize: node.frameSize
+        }
+        this.workerRuntime.postMessage({
+            method: "configure",
+            numFilters,
+            numCoefs,
+            sampleRate,
+            bufferSize: windowLength,
+            discardFirstBand
+        })
+    }
 }

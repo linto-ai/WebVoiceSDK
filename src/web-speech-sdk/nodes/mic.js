@@ -63,14 +63,17 @@ export default class Mic extends Node {
     }
 
     resume() {
+        super.resume()
         if (this.status == "non-emitting" && this.hookedOn) {
             this.mediaStreamSource.connect(this.micFrameGenerator)
             this.micFrameGenerator.connect(this.audioContext.destination)
+            this.status= "emitting"
         }
     }
 
 
     pause() {
+        super.pause()
         if (this.status == "emitting" && this.hookedOn) {
             this.mediaStreamSource.disconnect()
             this.micFrameGenerator.disconnect()
@@ -92,6 +95,5 @@ export default class Mic extends Node {
             })
             this.hookedOn = null
         }
-        return this
     }
 }

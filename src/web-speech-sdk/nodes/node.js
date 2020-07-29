@@ -36,7 +36,7 @@ export default class Node extends EventTarget {
 
     resume(){
         // force this.handler to bind on "this" instead of default addEventListener target (this.hookedOn)
-        if (this.type != "mic") this.hookedOn.addEventListener(this.hookedOn.event, this.handler.bind(this))
+        if (this.type != "mic") this.hookedOn.addEventListener(this.hookedOn.event, this.handler)
     }
 
 

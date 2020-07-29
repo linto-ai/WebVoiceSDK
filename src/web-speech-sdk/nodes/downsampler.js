@@ -23,14 +23,16 @@ export default class DownSampler extends Node {
     } = {}) {
         super()
         this.worker = Worker
-        this.handler = handler
+        this.handler = handler.bind(this)
         this.type = "downSampler"
         this.event = "downSamplerFrame" //emitted
         this.hookableOnNodeTypes = ["mic"]
         this.options = {
             targetSampleRate,
             targetFrameSize,
-            Int16Convert
+            Int16Convert,
+            sampleRate: targetSampleRate,
+            frameSize: targetFrameSize
         }
     }
 
