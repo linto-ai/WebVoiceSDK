@@ -2,7 +2,7 @@ import Node from '../nodes/node.js'
 import Worker from '../workers/hotword.blob.js'
 import tfWasm from '../../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm'
 //Hotword model bundling
-import * as lintoModelWeights from "../../../hotwords/linto/1/group1-shard1of1.bin"
+import * as lintoModelWeights from "../../../hotwords/linto/2/group1-shard1of1.bin"
 
 const handler = function (mfcc) {
     if (this.mfccBuffer.length < 30) {
@@ -46,7 +46,7 @@ export default class HotWord extends Node {
     }
 
     loadModel(){
-        let topology = require("../../../hotwords/linto/1/model.json")
+        let topology = require("../../../hotwords/linto/2/model.json")
         topology.weightsManifest[0].paths = [lintoModelWeights.weightsURL()]
         this.workerRuntime.postMessage({
             method: "loadModel",

@@ -72,6 +72,7 @@ function infer(features) {
     tensor = tf.tensor3d(new Array(features))
     const inference = model.predict(tensor)
     const value = inference.dataSync()[0]
-    if (value == 1) console.log("YEAH !")
+    //console.log(value)
+    if (value > 0.9) console.log("YEAH !")
     //postMessage(value)
 }
