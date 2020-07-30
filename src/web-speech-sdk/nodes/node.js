@@ -3,6 +3,7 @@ import NodeError from '../nodes/error.js'
 export default class Node extends EventTarget {
     constructor() {
         super()
+        this.status = "non-emitting"
     }
 
     async start(node) {
@@ -31,12 +32,18 @@ export default class Node extends EventTarget {
     }
 
     pause() {
-        if (this.type != "mic") this.hookedOn.removeEventListener(this.hookedOn.event, this.handler)
+        if (this.hookedOn && this.status == "emitting") {
+            if (this.type != "mic") this.hookedOn.removeEventListener(this.hookedOn.event, this.handler)
+            this.status = "non-emitting"
+        }
     }
 
-    resume(){
+    resume() {
         // force this.handler to bind on "this" instead of default addEventListener target (this.hookedOn)
-        if (this.type != "mic") this.hookedOn.addEventListener(this.hookedOn.event, this.handler)
+        if (this.hookedOn && this.status == "non-emitting") {
+            if (this.type != "mic") this.hookedOn.addEventListener(this.hookedOn.event, this.handler)
+            this.status = "emitting"
+        }
     }
 
 

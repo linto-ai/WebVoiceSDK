@@ -12,25 +12,17 @@ export default class SpeechPreemphaser extends Node {
     constructor() {
         super()
         this.worker = Worker
-        this.handler = handler
+        this.handler = handler.bind(this)
         this.type = "speechPreemphaser"
         this.event = "speechPreemphaserFrame" //emitted
-        this.hookableOnNodeTypes = ["mic","downsampler"]
+        this.hookableOnNodeTypes = ["mic","downSampler"]
     }
 
     async start(node){
         await super.start(node)
         this.options = {
-            sampleRate: node.sampleRate,
-            frameSize: node.frameSize
+            sampleRate: node.options.sampleRate,
+            frameSize: node.options.frameSize
         }
-        this.workerRuntime.postMessage({
-            method: "configure",
-            numFilters,
-            numCoefs,
-            sampleRate,
-            bufferSize: windowLength,
-            discardFirstBand
-        })
     }
 }

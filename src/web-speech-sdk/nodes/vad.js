@@ -24,7 +24,6 @@ const handler = function (nodeEvent) {
             this.redemptionTimer = setTimeout(() => {
                 if (this.wasmRuntime) {
                     this.speaking = false
-                    console.log("Not speaking")
                     this.dispatchEvent(new CustomEvent(this.event, {
                         "detail": false
                     }))
@@ -33,7 +32,6 @@ const handler = function (nodeEvent) {
         }
         if ((activations >= this.options.numActivations) && !this.speaking) {
             this.speaking = true
-            console.log("Speaking")
             this.dispatchEvent(new CustomEvent(this.event, {
                 "detail": true
             }))

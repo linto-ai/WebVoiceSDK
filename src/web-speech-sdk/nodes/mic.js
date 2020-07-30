@@ -23,7 +23,6 @@ export default class Mic extends Node {
     } = {}) {
         super()
         this.type = "mic"
-        this.status = "non-emitting"
         this.event = "micFrame" //emitted
         this.hookedOn = null
         this.hookableOnNodeTypes = [] //none, this node will connect to getUserMedia stream
@@ -64,21 +63,15 @@ export default class Mic extends Node {
 
     resume() {
         super.resume()
-        if (this.status == "non-emitting" && this.hookedOn) {
-            this.mediaStreamSource.connect(this.micFrameGenerator)
-            this.micFrameGenerator.connect(this.audioContext.destination)
-            this.status= "emitting"
-        }
+        this.mediaStreamSource.connect(this.micFrameGenerator)
+        this.micFrameGenerator.connect(this.audioContext.destination)
     }
 
 
     pause() {
         super.pause()
-        if (this.status == "emitting" && this.hookedOn) {
-            this.mediaStreamSource.disconnect()
-            this.micFrameGenerator.disconnect()
-            this.status = "non-emitting"
-        }
+        this.mediaStreamSource.disconnect()
+        this.micFrameGenerator.disconnect()
     }
 
     stop() {

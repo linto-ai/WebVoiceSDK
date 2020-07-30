@@ -1,5 +1,6 @@
 import Node from '../nodes/node.js'
 import Worker from '../workers/features.blob.js'
+import NodeError from '../nodes/error.js'
 
 const handler = function (nodeEvent) {
     //accumulate audioframes until analysis window is full
@@ -15,7 +16,7 @@ const handler = function (nodeEvent) {
 }
 
 
-export default class FeatureExtractor extends Node {
+export default class FeaturesExtractor extends Node {
 
     static defaultOptions = {
         numFilters: 20,
@@ -31,9 +32,9 @@ export default class FeatureExtractor extends Node {
         super()
         this.worker = Worker
         this.handler = handler.bind(this)
-        this.type = "featureExtractor"
+        this.type = "featuresExtractor"
         this.event = "mfccFeatures" //emitted
-        this.hookableOnNodeTypes = ["mic","downSampler","speechPreemphaser"]
+        this.hookableOnNodeTypes = ["mic", "downSampler", "speechPreemphaser"]
         this.windowBuffer = new Array()
         this.options = {
             numFilters,
@@ -42,19 +43,26 @@ export default class FeatureExtractor extends Node {
         }
     }
 
-    async start(node){
-        await super.start(node)
-        this.options = {
-            ...this.options,
-            sampleRate: node.options.sampleRate,
-            frameSize: node.options.frameSize
+    async start(node) {
+        if (!node) throw new NodeError(`${this.type} requires a node argument to hook on`)
+        try {
+            this.options = {
+                ...this.options,
+                sampleRate: node.options.sampleRate,
+                frameSize: node.options.frameSize
+            }
+            await super.start(node)
+            this.windowStride = node.options.frameSize
+            this.windowLength = node.options.frameSize * 2
+            this.workerRuntime.postMessage({
+                method: "configure",
+                bufferSize: this.windowLength,
+                ...this.options
+            })
+        } catch (e) {
+            throw new NodeError(`${node.type} needs to get started before being passed to ${this.type}.start()`)
         }
-        this.windowStride = node.options.frameSize
-        this.windowLength = node.options.frameSize * 2
-        this.workerRuntime.postMessage({
-            method: "configure",
-            bufferSize: this.windowLength,
-            ...this.options
-        })
+
     }
+
 }
