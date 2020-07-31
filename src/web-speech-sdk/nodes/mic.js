@@ -29,7 +29,7 @@ export default class Mic extends Node {
         this.options = {
             sampleRate,
             frameSize,
-            ...constraints
+            constraints
         }
     }
 

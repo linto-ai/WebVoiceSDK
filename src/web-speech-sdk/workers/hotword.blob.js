@@ -67,5 +67,6 @@ function infer(features) {
     tensor = tf.tensor3d(new Array(features))
     const inference = model.predict(tensor)
     const value = inference.dataSync()[0]
+    if (value > 0.7) console.log("linto")
     postMessage(value)
 }

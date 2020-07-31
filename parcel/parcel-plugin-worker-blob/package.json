@@ -1,5 +1,5 @@
 {
-  "name": "parcel-plugin-inline-worker",
+  "name": "parcel-plugin-worker-blob",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",

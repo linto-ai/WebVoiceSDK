@@ -1,5 +1,5 @@
 {
-  "name": "parcel-plugin-inline-wasm",
+  "name": "parcel-plugin-wasm-blob",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
