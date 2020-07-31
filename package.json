@@ -28,9 +28,9 @@
     "dct": "^0.1.0",
     "fftjs": "0.0.4",
     "parcel-bundler": "^1.12.4",
-    "parcel-plugin-blob-tensorflowjs": "file:parcel/parcel-plugin-blob-tensorflowjs",
-    "parcel-plugin-blob-wasm": "file:parcel/parcel-plugin-blob-wasm",
-    "parcel-plugin-blob-worker": "file:parcel/parcel-plugin-blob-worker",
+    "parcel-plugin-blob-tensorflowjs": "file:parcel/parcel-plugin-tensorflowjs-blob",
+    "parcel-plugin-blob-wasm": "file:parcel/parcel-plugin-wasm-blob",
+    "parcel-plugin-blob-worker": "file:parcel/parcel-plugin-worker-blob",
     "rnnoise-wasm": "github:jitsi/rnnoise-wasm.git"
   },
   "browserslist": [

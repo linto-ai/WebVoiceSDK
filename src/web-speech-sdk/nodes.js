@@ -13,14 +13,45 @@ window.speechPreemphaser = new SpeechPreemphaser()
 window.vad = new Vad()
 window.feat = new FeaturesExtractor()
 window.hotword = new Hotword()
-window.rec = new Recorder()
+
+window.recMic = new Recorder()
+window.recFeatures = new Recorder()
+window.recDownsampler = new Recorder()
+window.recSpeechPreemphaser = new Recorder()
+window.recHw = new Recorder()
+
+
 window.start = async function(){
-    // await downSampler.start(mic)
-    // await speechPreemphaser.start(downSampler)
-    // await vad.start(mic)
-    // await feat.start(speechPreemphaser)
-    // //Optionnal VAD node... infer hotword only if needed
-    // await hotword.start(feat)
-    // await hotword.loadModel()
-    // await mic.start()
+    await downSampler.start(mic)
+    await speechPreemphaser.start(downSampler)
+    await feat.start(speechPreemphaser)
+    await hotword.start(feat)
+    await hotword.loadModel(hotword.availableModels[1].lintoBeta)
+    await mic.start()
+
+    await recMic.start(mic)
+    await recHw.start(hotword)
+    await recFeatures.start(feat)
+    await recDownsampler.start(downSampler)
+    await recSpeechPreemphaser.start(speechPreemphaser)
+
+    recMic.rec()
+    recFeatures.rec()
+    recDownsampler.rec()
+    recSpeechPreemphaser.rec()
+    recHw.rec()
+}
+
+window.stop = async function(){
+    recMic.stopRec()
+    recFeatures.stopRec()
+    recDownsampler.stopRec()
+    recSpeechPreemphaser.stopRec()
+    recHw.stopRec()
+
+    recMic.getFile()
+    recFeatures.getFile()
+    recDownsampler.getFile()
+    recSpeechPreemphaser.getFile()
+    recHw.getFile()
 }
