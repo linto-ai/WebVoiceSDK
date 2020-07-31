@@ -1,8 +1,20 @@
 import Node from '../nodes/node.js'
 import Worker from '../workers/hotword.blob.js'
-import tfWasm from '../../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm'
-//Hotword model bundling
-import * as lintoModelWeights from "../../../hotwords/linto/2/group1-shard1of1.bin"
+import NodeError from '../nodes/error.js'
+//uses a specific parcel bundler plugin to get the blob URL of the backend wasm file
+import tfWasm from '../../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm' 
+// import all hotword models using a specific parcel bundler plugin
+import models from "../../../hotwords/**/*.bin"
+
+function validURL(str) {
+    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return !!pattern.test(str);
+  }
 
 const handler = function (mfcc) {
     if (this.mfccBuffer.length < 30) {
@@ -19,6 +31,7 @@ const handler = function (mfcc) {
 }
 
 export default class HotWord extends Node {
+
     constructor() {
         super()
         this.worker = Worker
@@ -27,12 +40,21 @@ export default class HotWord extends Node {
         this.type = "hotword"
         this.event = "hotword" //emitted
         this.hookableOnNodeTypes = ["featuresExtractor"]
+        this.availableModels = []
+        for (let modelName in models){
+            let weigthManifest = models[modelName]
+            for (let callOnMe in weigthManifest){
+                let modelURL = models[modelName][callOnMe]["blobModelPath"].call()
+                this.availableModels.push({[modelName]:modelURL})
+            }
+        }
     }
 
-    //Optional VAD node to infer only if speaking is 
+    //Optional VAD node to infer only if vad.speaking==true
     async start(node,vadNode){
         await super.start(node)
         if (vadNode) this.vadNode = vadNode
+        // Loads wasm backend on tensorflowJs
         this.workerRuntime.postMessage({
             method: "configure",
             wasmPath: tfWasm.forInstanciate()
@@ -45,14 +67,13 @@ export default class HotWord extends Node {
         }
     }
 
-    loadModel(){
-        let topology = require("../../../hotwords/linto/2/model.json")
-        topology.weightsManifest[0].paths = [lintoModelWeights.weightsURL()]
+    loadModel(modelUrl){
         this.workerRuntime.postMessage({
             method: "loadModel",
-            topology
+            modelUrl
         })
     }
+
 
     test(){
         this.workerRuntime.postMessage({

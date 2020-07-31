@@ -16,6 +16,7 @@ const handler = function (nodeEvent) {
         if (this.activations.length == this.options.numActivations) this.activations.shift()
         this.activations.push(0 + (vadScore > this.options.threshold))
         let activations = this.activations.reduce((accum, val) => accum + val)
+        // @TODO : Rework this shitty hysteresis (ashamed i am)
         if (vadScore >= this.options.threshold && this.redemptionTimer) {
             clearTimeout(this.redemptionTimer)
             this.redemptionTimer = false

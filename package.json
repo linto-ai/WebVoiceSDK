@@ -6,7 +6,7 @@
   "scripts": {
     "build": "parcel build src/index.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webspeechsdk.min.js",
     "try": "parcel example/index.html --out-dir dev-build --log-level 4 --no-cache",
-    "new": "parcel src/web-speech-sdk/index.html --out-dir dev-build --log-level 4 --no-cache"
+    "new": "parcel src/web-speech-sdk/index.html --out-dir dev-build --no-cache"
   },
   "repository": {
     "type": "git",

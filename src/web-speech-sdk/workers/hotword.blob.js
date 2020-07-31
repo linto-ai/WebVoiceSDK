@@ -15,13 +15,8 @@ onmessage = async function (msg) {
 
         case "loadModel":
             await tf.ready()
-            const topology = msg.data.topology
-            // topology.weightsManifest[0].paths[0] is the full "blob:http://..." URL to the blobbed tensorflowjs weights bin file
-            const weightRelativeUrl = topology.weightsManifest[0].paths[0].slice(topology.weightsManifest[0].paths[0].lastIndexOf("/")+1)
-            topology.weightsManifest[0].paths[0] = weightRelativeUrl
-            const topologyBlob = new Blob([JSON.stringify(topology)], { type: 'application/json' })
-            topologyBlobUrl = URL.createObjectURL(topologyBlob)
-            model = await tf.loadLayersModel(topologyBlobUrl)
+            model = await tf.loadLayersModel(msg.data.modelUrl)
+            console.log(model)
             break
         case "test":
             await tf.ready()

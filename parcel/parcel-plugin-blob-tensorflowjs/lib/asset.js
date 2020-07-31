@@ -1,10 +1,14 @@
-const { Asset } = require('parcel-bundler');
+const {
+  Asset
+} = require('parcel-bundler');
+const fs = require("fs")
+const path = require("path")
 
-// Implemented "blobbing" of wasm file like https://github.com/ballercat/wasm-loader does
-// Or maybe as a response for fetch inside WebAssemly.instantiateStreaming https://github.com/DevAndyLee/js-inline-wasm
-class WASMAsset extends Asset{
+class TfjsBinAsset extends Asset {
   constructor(name, pkg, options) {
-    super(name, pkg, options);
+    super(name, pkg, options)
+    // Loads the model.json which in the same folder of the weight manifest. We gonna hack some paths with "blob" URLS
+    this.modelJSON = require(path.join(path.dirname(name), "model.json"))
     this.type = 'js';
     this.encoding = null;
   }
@@ -18,10 +22,14 @@ class WASMAsset extends Asset{
       buf[i] = binString.charCodeAt(i);
     }
 
-    module.exports.weightsURL = function() {
-      const blob = new Blob([buf], { type: 'application/octet-stream' });
-      const binBlobURL = URL.createObjectURL(blob);
-      return binBlobURL
+    module.exports.blobModelPath = function() {
+      const blob = new Blob([buf], { type: 'application/octet-stream' })
+      const binBlobURL = URL.createObjectURL(blob)
+      const model = ${JSON.stringify(this.modelJSON)}
+      model.weightsManifest[0].paths[0] = binBlobURL.slice(binBlobURL.lastIndexOf("/") + 1)
+      const modelBlob = new Blob([JSON.stringify(model)],{type: 'application/json'})
+      const modelBlobPath = URL.createObjectURL(modelBlob)
+      return modelBlobPath
     }
     `;
 
@@ -31,5 +39,4 @@ class WASMAsset extends Asset{
   }
 }
 
-module.exports = WASMAsset
-
+module.exports = TfjsBinAsset
