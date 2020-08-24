@@ -1,5 +1,5 @@
-self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.1/dist/tf.min.js')
-self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm')
+self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.3.0/dist/tf.min.js')
+self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.3.0/dist/tf-backend-wasm.min.js')
 
 let model
 onmessage = async function (msg) {
@@ -67,6 +67,7 @@ function infer(features) {
     tensor = tf.tensor3d(new Array(features))
     const inference = model.predict(tensor)
     const value = inference.dataSync()[0]
+    console.log(value)
     if (value > 0.7) console.log("linto")
     postMessage(value)
 }
