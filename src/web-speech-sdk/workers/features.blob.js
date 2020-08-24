@@ -250,14 +250,13 @@ let ifft = function (signal) {
 
 var prepareSignalWithSpectrum = function (signal, bufferSize) {
     var preparedSignal = {};
-    preparedSignal.complexSpectrum = fft(signal);
-    preparedSignal.ampSpectrum = new Float32Array(bufferSize / 2);
-    for (var i = 0; i < bufferSize / 2; i++) {
-        preparedSignal.ampSpectrum[i] = Math.sqrt(
+    preparedSignal.complexSpectrum = fft(signal.slice(0, bufferSize / 2));
+    preparedSignal.ampSpectrum = new Float32Array(bufferSize / 4 + 1);
+    for (var i = 0; i < bufferSize / 4 + 1; i++) {
+        preparedSignal.ampSpectrum[i] = (
             Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
-            Math.pow(preparedSignal.complexSpectrum.imag[i], 2));
+            Math.pow(preparedSignal.complexSpectrum.imag[i], 2) / (bufferSize / 2));
     }
-
     return preparedSignal;
 };
 
@@ -268,9 +267,8 @@ function powerSpectrum() {
 
     let powerSpectrum = new Float32Array(arguments[0].ampSpectrum.length);
     for (var i = 0; i < powerSpectrum.length; i++) {
-        powerSpectrum[i] = Math.pow(arguments[0].ampSpectrum[i], 2);
+        powerSpectrum[i] = arguments[0].ampSpectrum[i];
     }
-
     return powerSpectrum;
 }
 
