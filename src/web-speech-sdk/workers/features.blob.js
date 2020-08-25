@@ -25,19 +25,28 @@ var memoizeCosines = function (N) {
     }
 };
 
-function dct(signal, scale) {
-    var L = signal.length;
-    scale = scale || 2;
-    if (!cosMap || !cosMap[L]) memoizeCosines(L);
-    var coefficients = signal.map(function () {
-        return 0;
-    });
-    return coefficients.map(function (__, ix) {
-        return scale * signal.reduce(function (prev, cur, ix_, arr) {
-            return prev + (cur * cosMap[L][ix_ + (ix * L)]);
-        }, 0);
-    });
-};
+function dct(signal) {
+    var N = signal.length
+    var result = new Float32Array(N);
+    var sum = 0.0;
+    var scaling_factor0 = Math.sqrt(1 / (4 * N));
+    var scaling_factor = Math.sqrt(1 / (2 * N));
+    for (var k = 0; k < N; k++){
+        sum = 0.0;
+        for (var n = 0; n < N ; n++) {
+          sum += signal[n] * Math.cos(Math.PI * k * (2 * n + 1)/(2 * N));
+        }
+        sum *= 2;
+        
+        if (k == 0){
+          sum = sum * scaling_factor0;
+        } else {
+          sum = sum * scaling_factor;
+        }
+        result[k] = sum;
+      }
+      return result;
+  }
 
 // =============================================================================
 // FFT UTILS
@@ -255,7 +264,7 @@ var prepareSignalWithSpectrum = function (signal, bufferSize) {
     for (var i = 0; i < bufferSize / 4 + 1; i++) {
         preparedSignal.ampSpectrum[i] = (
             Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
-            Math.pow(preparedSignal.complexSpectrum.imag[i], 2) / (bufferSize / 2));
+            Math.pow(preparedSignal.complexSpectrum.imag[i], 2)) / (bufferSize / 2);
     }
     return preparedSignal;
 };
@@ -373,9 +382,9 @@ function mffcCompute(args) {
     let loggedMelBands = new Float32Array(numFilters);
 
     for (let i = 0; i < loggedMelBands.length; i++) {
-        filtered[i] = new Float32Array(args.bufferSize / 2);
+        filtered[i] = new Float32Array(args.bufferSize / 4 + 1);
         loggedMelBands[i] = 0;
-        for (let j = 0; j < (args.bufferSize / 2); j++) {
+        for (let j = 0; j < (args.bufferSize / 4 + 1); j++) {
             //point-wise multiplication between power spectrum and filterbanks.
             filtered[i][j] = args.melFilterBank[i][j] * powSpec[j];
 
@@ -413,7 +422,7 @@ onmessage = function (msg) {
             sampleRate = msg.data.sampleRate
             bufferSize = msg.data.bufferSize
             discardFirstBand = msg.data.discardFirstBand
-            melFilterBank = createMelFilterBank(numFilters, sampleRate, bufferSize)
+            melFilterBank = createMelFilterBank(numFilters, sampleRate * 2, bufferSize / 2)
             break
         case "process":
             mfcc(msg.data.audioFrame, sampleRate, bufferSize)
