@@ -24,26 +24,25 @@ var memoizeCosines = function (N) {
         }
     }
 };
-
+// DCT type 2 with ortho norm
 function dct(signal) {
     var N = signal.length
-    var result = new Float32Array(N);
+    var result = new Array(N);
     var sum = 0.0;
-    var scaling_factor0 = Math.sqrt(1 / (4 * N));
-    var scaling_factor = Math.sqrt(1 / (2 * N));
-    for (var k = 0; k < N; k++){
+
+    // First value
+    for (var n = 0; n < N ; n++) {
+        sum += signal[n];
+    }
+    result[0] = sum * 2 * Math.sqrt(1 / (4 * N))
+
+    // Following values
+    for (var k = 1; k < N; k++){
         sum = 0.0;
         for (var n = 0; n < N ; n++) {
           sum += signal[n] * Math.cos(Math.PI * k * (2 * n + 1)/(2 * N));
         }
-        sum *= 2;
-        
-        if (k == 0){
-          sum = sum * scaling_factor0;
-        } else {
-          sum = sum * scaling_factor;
-        }
-        result[k] = sum;
+        result[k] = sum * 2 * Math.sqrt(1 / (2 * N));
       }
       return result;
   }
@@ -211,47 +210,6 @@ let fft = function (signal) {
     return complexSignal;
 }
 
-// complex to real ifft
-let ifft = function (signal) {
-
-    if (signal.real === undefined || signal.imag === undefined) {
-        throw new Error("IFFT only accepts a complex input.")
-    }
-
-    const N = signal.real.length;
-
-    var complexSignal = {
-        'real': [],
-        'imag': []
-    };
-
-    //take complex conjugate in order to be able to use the regular FFT for IFFT
-    for (let i = 0; i < N; i++) {
-        let currentSample = {
-            'real': signal.real[i],
-            'imag': signal.imag[i]
-        };
-
-        let conjugateSample = conj(currentSample);
-        complexSignal.real[i] = conjugateSample.real;
-        complexSignal.imag[i] = conjugateSample.imag;
-    }
-
-    //compute
-    let X = fft(complexSignal);
-
-    //normalize
-    complexSignal.real = X.real.map((val) => {
-        return val / N;
-    });
-
-    complexSignal.imag = X.imag.map((val) => {
-        return val / N;
-    });
-
-    return complexSignal;
-}
-
 
 // =============================================================================
 //  MFCC
@@ -260,27 +218,14 @@ let ifft = function (signal) {
 var prepareSignalWithSpectrum = function (signal, bufferSize) {
     var preparedSignal = {};
     preparedSignal.complexSpectrum = fft(signal.slice(0, bufferSize / 2));
-    preparedSignal.ampSpectrum = new Float32Array(bufferSize / 4 + 1);
+    preparedSignal.powSpectrum = new Float32Array(bufferSize / 4 + 1);
     for (var i = 0; i < bufferSize / 4 + 1; i++) {
-        preparedSignal.ampSpectrum[i] = (
+        preparedSignal.powSpectrum[i] = (
             Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
             Math.pow(preparedSignal.complexSpectrum.imag[i], 2)) / (bufferSize / 2);
     }
     return preparedSignal;
 };
-
-function powerSpectrum() {
-    if (typeof arguments[0].ampSpectrum !== 'object') {
-        throw new TypeError();
-    }
-
-    let powerSpectrum = new Float32Array(arguments[0].ampSpectrum.length);
-    for (var i = 0; i < powerSpectrum.length; i++) {
-        powerSpectrum[i] = arguments[0].ampSpectrum[i];
-    }
-    return powerSpectrum;
-}
-
 
 function _melToFreq(melValue) {
     var freqValue = 700 * (Math.exp(melValue / 1127) - 1);
@@ -353,13 +298,12 @@ function createMelFilterBank(numFilters, sampleRate, bufferSize) {
                 (fftBinsOfFreq[j + 2] - fftBinsOfFreq[j + 1]);
         }
     }
-
     return filterBank;
 }
 
 
 function mffcCompute(args) {
-    if (typeof args.ampSpectrum !== 'object') {
+    if (typeof args.powSpectrum !== 'object') {
         throw new TypeError('Valid ampSpectrum is required to generate MFCC');
     }
     if (typeof args.melFilterBank !== 'object') {
@@ -371,14 +315,12 @@ function mffcCompute(args) {
     // Tutorial from:
     // http://practicalcryptography.com/miscellaneous/machine-learning
     // /guide-mel-frequency-cepstral-coefficients-mfccs/
-    let powSpec = powerSpectrum(args);
     let numFilters = args.melFilterBank.length;
     let filtered = Array(numFilters);
 
     if (numFilters < numberOfMFCCCoefficients) {
         throw new Error("Insufficient filter bank for requested number of coefficients");
     }
-
     let loggedMelBands = new Float32Array(numFilters);
 
     for (let i = 0; i < loggedMelBands.length; i++) {
@@ -386,16 +328,13 @@ function mffcCompute(args) {
         loggedMelBands[i] = 0;
         for (let j = 0; j < (args.bufferSize / 4 + 1); j++) {
             //point-wise multiplication between power spectrum and filterbanks.
-            filtered[i][j] = args.melFilterBank[i][j] * powSpec[j];
-
+            filtered[i][j] = args.melFilterBank[i][j] * args.powSpectrum[j];
             //summing up all of the coefficients into one array
             loggedMelBands[i] += filtered[i][j];
         }
-
         //log each coefficient.
-        loggedMelBands[i] = Math.log(loggedMelBands[i] + 1);
+        loggedMelBands[i] = Math.log(loggedMelBands[i] > 0.0 ? loggedMelBands[i] : 1e-45);
     }
-
     //dct
     let loggedMelBandsArray = Array.prototype.slice.call(loggedMelBands);
     let mfccs = dct(loggedMelBandsArray).slice(0, numberOfMFCCCoefficients);
@@ -430,15 +369,13 @@ onmessage = function (msg) {
     }
 }
 
-
 function mfcc(audioBuffer, sampleRate, bufferSize) {
-    //Compute amplitude spectrum (Float32Array)
     let preparedSignal = prepareSignalWithSpectrum(audioBuffer, bufferSize)
     let preparedObject = {
         numberOfMFCCCoefficients: numCoefs,
         sampleRate,
         bufferSize,
-        ampSpectrum: preparedSignal.ampSpectrum,
+        powSpectrum: preparedSignal.powSpectrum,
         melFilterBank
     }
     let mfccs = mffcCompute(preparedObject)
