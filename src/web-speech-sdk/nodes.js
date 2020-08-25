@@ -23,6 +23,7 @@ window.recHw = new Recorder()
 
 window.start = async function(){
     await downSampler.start(mic)
+    await vad.start(mic)
     await speechPreemphaser.start(downSampler)
     await feat.start(speechPreemphaser)
     await hotword.start(feat)
