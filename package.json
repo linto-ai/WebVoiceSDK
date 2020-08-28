@@ -13,21 +13,20 @@
     "url": "git+https://github.com/damienlaine/webvoicesdk.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "AGPLV3",
   "bugs": {
     "url": "https://github.com/damienlaine/webvoicesdk/issues"
   },
   "homepage": "https://github.com/damienlaine/webvoicesdk#readme",
-  "dependencies": {},
   "devDependencies": {
     "@tensorflow/tfjs": "^2.3.0",
     "@tensorflow/tfjs-backend-cpu": "^2.3.0",
     "@tensorflow/tfjs-backend-wasm": "^2.3.0",
     "@tensorflow/tfjs-backend-webgl": "^2.3.0",
     "parcel-bundler": "^1.12.4",
-    "parcel-plugin-blob-wasm": "file:parcel/parcel-plugin-wasm-blob",
-    "parcel-plugin-blob-worker": "file:parcel/parcel-plugin-worker-blob",
     "parcel-plugin-tensorflowjs-blob": "^1.0.0",
+    "parcel-plugin-wasm-blob": "^1.0.0",
+    "parcel-plugin-worker-blob": "^1.0.0",
     "rnnoise-wasm": "github:jitsi/rnnoise-wasm.git"
   },
   "browserslist": [

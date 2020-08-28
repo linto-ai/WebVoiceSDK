@@ -26,7 +26,7 @@ window.start = async function(){
     await vad.start(mic)
     await speechPreemphaser.start(downSampler)
     await feat.start(speechPreemphaser)
-    await hotword.start(feat)
+    await hotword.start(feat,vad)
     await hotword.loadModel(hotword.availableModels[1].lintoBeta)
     await mic.start()
 
