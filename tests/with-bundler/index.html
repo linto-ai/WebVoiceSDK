@@ -1,8 +1,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Playback tests</title>
+    <title>Some tests</title>
     <style>
+        .linto {
+            font-size: 10rem;
+            display: none;
+        }
+
         textarea {
             font-size: .8rem;
             letter-spacing: 1px;
@@ -25,7 +30,7 @@
             height: 30px;
             width: 25%;
             margin: 10px 0;
-            display:inline;
+            display: inline;
         }
 
         .led-box p {
@@ -78,15 +83,19 @@
 
 <body>
     <div>
+        <button id="start">Start all</button>
+        <button id="stop">Stop all</button>
+        <button id="startrecord">Record events</button>
+        <button id="stoprecord">Stop recording</button>
+    </div>
+    <hr />
+    <div>
         <label for="mic">Mic options :</label>
-        <button id="start">Start mic</button>
-        <button id="stop">stop mic</button>
         <textarea id="mic" rows="10" cols="50"></textarea>
     </div>
     <hr />
     <div>
         <label for="downsampler">Downsampling options :</label>
-        <input type="checkbox" id="useDownsampler" name="useDownsampler">Use downsampler on native audio frames</input>
         <textarea id="downsampler" rows="10" cols="50"></textarea>
     </div>
     <hr />
@@ -95,26 +104,13 @@
             <div id="VADLed" class="led-green" style="display: none;"></div>
         </div>
         <label for="useVAD">VAD options :</label>
-        <input type="checkbox" id="useVAD" name="useVAD">Use VAD on native audio frames</input>
         <textarea id="VAD" rows="10" cols="50"></textarea>
     </div>
     <hr />
     <div>
-        <label for="useSpeechPreEmphasis">Speech Preemphasis options :</label>
-        <input type="checkbox" id="useSpeechPreEmphasis" name="useSpeechPreEmphasis">Use Speech Preemphasis on native or downsampled audio frames</input>
-        <textarea id="speechPreEmphasis" rows="10" cols="50"></textarea>
-    </div>
-    <hr />
-    <div>
-        <label for="useFeatureExtraction">Speech Preemphasis options :</label>
-        <input type="checkbox" id="useFeatureExtraction" name="useFeatureExtraction">Use audio features extraction (MFCC) on downsampled or speech pre-emphased audio frames </input>
-        <textarea id="featureExtraction" rows="10" cols="50"></textarea>
-    </div>
-    <hr />
-    <div>
-        <label for="useHotWord">HotWord inference :</label>
-        <input type="checkbox" id="useHotWord" name="useHotWord">Infer HotWord with extracted audio Features</input>
-        <textarea id="hotWord" rows="10" cols="50"></textarea>
+        <div class="linto" id="LinTO">
+            LinTO !
+        </div>
     </div>
 
 

@@ -63,11 +63,4 @@ export default class HotWord extends Node {
             modelUrl
         })
     }
-
-
-    test(){
-        this.workerRuntime.postMessage({
-            method: "test"
-        })
-    }
 }
