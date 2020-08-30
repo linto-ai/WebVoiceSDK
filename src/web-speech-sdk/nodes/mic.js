@@ -6,9 +6,9 @@ export default class Mic extends Node {
         sampleRate: 44100,
         frameSize: 4096,
         constraints: {
-            echoCancellation: true,
-            autoGainControl: true,
-            noiseSuppression: true
+            echoCancellation: false,
+            autoGainControl: false,
+            noiseSuppression: false
         }
     }
 
@@ -16,9 +16,9 @@ export default class Mic extends Node {
         sampleRate = 44100,
         frameSize = 4096,
         constraints = {
-            echoCancellation: true,
-            autoGainControl: true,
-            noiseSuppression: true
+            echoCancellation: false,
+            autoGainControl: false,
+            noiseSuppression: false
         }
     } = {}) {
         super()
