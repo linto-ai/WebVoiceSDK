@@ -30,12 +30,12 @@ export default class HotWord extends Node {
         this.type = "hotword"
         this.event = "hotword" //emitted
         this.hookableOnNodeTypes = ["featuresExtractor"]
-        this.availableModels = []
+        this.availableModels = {}
         for (let modelName in models){
             let weigthManifest = models[modelName]
             for (let callOnMe in weigthManifest){
                 let modelURL = models[modelName][callOnMe]["blobModelPath"].call()
-                this.availableModels.push({[modelName]:modelURL})
+                this.availableModels[modelName] = modelURL
             }
         }
     }

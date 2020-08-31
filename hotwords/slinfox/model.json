@@ -1,5 +1,5 @@
 {
-    "words": ["linto"],
+    "words": ["linto","firefox","snips"],
     "format": "layers-model",
     "generatedBy": "keras v2.2.4-tf",
     "convertedBy": "TensorFlow.js Converter v2.0.1.post1",
@@ -9,7 +9,7 @@
         "model_config": {
             "class_name": "Sequential",
             "config": {
-                "name": "sequential_16",
+                "name": "sequential_4",
                 "layers": [
                     {
                         "class_name": "GRU",
@@ -94,7 +94,7 @@
                             "name": "output",
                             "trainable": true,
                             "dtype": "float32",
-                            "units": 1,
+                            "units": 3,
                             "activation": "sigmoid",
                             "use_bias": true,
                             "kernel_initializer": {
@@ -187,14 +187,14 @@
                     "name": "output/kernel",
                     "shape": [
                         20,
-                        1
+                        3
                     ],
                     "dtype": "float32"
                 },
                 {
                     "name": "output/bias",
                     "shape": [
-                        1
+                        3
                     ],
                     "dtype": "float32"
                 }

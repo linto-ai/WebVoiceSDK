@@ -3,13 +3,18 @@ const VADHandler = function (speakingEvent) {
 }
 
 const HotwordHandler = function (hotwordEvent) {
-    if (hotwordEvent.detail > 0.7) {
-        hotword.pause()
-        document.getElementById("LinTO").setAttribute('style', 'display:inline-block;')
-    }
+    hotwordEvent.detail.map((val)=>{
+        if (val[1] > 0.7){
+            hotword.pause()
+            hotword.removeEventListener("hotword", HotwordHandler)
+            document.getElementById("LinTO").innerHTML = val[0]
+            document.getElementById("LinTO").setAttribute('style', 'display:inline-block;')
+        }
+    })
     setTimeout(() => {
         document.getElementById("LinTO").setAttribute('style', 'display:none;')
         hotword.resume()
+        hotword.addEventListener("hotword", HotwordHandler)
     }, 1500)
 }
 
@@ -25,7 +30,7 @@ window.start = async function () {
     await speechPreemphaser.start(downSampler)
     await feat.start(speechPreemphaser)
     await hotword.start(feat, vad)
-    await hotword.loadModel(hotword.availableModels[1].lintoBeta)
+    await hotword.loadModel(hotword.availableModels["slinfox"])
     await mic.start()
     document.getElementById("VADLed").setAttribute('style', 'display:inline-block;')
     vad.addEventListener("speakingStatus", VADHandler)
