@@ -51,6 +51,21 @@ export default class HotWord extends Node {
         })
     }
 
+    pause(){
+        this.workerRuntime.postMessage({
+            method: "immediatePause"
+        })
+        super.pause()
+        this.mfccBuffer = [] // Clears already processed buffer
+    }
+
+    resume(){
+        this.workerRuntime.postMessage({
+            method: "immediateResume"
+        })
+        super.resume()
+    }
+
     stop() {
         if (this.hookedOn) {
             super.stop()

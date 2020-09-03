@@ -30,7 +30,7 @@ window.start = async function () {
     await speechPreemphaser.start(downSampler)
     await feat.start(speechPreemphaser)
     await hotword.start(feat, vad)
-    await hotword.loadModel(hotword.availableModels["slinfox"])
+    await hotword.loadModel(hotword.availableModels["lintoBeta"])
     await mic.start()
     document.getElementById("VADLed").setAttribute('style', 'display:inline-block;')
     vad.addEventListener("speakingStatus", VADHandler)

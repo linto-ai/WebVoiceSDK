@@ -15,7 +15,9 @@ onmessage = async function (msg) {
             break
         case "loadModel":
             await tf.ready()
-            const manifestRequest = await fetch(msg.data.modelUrl, {method: 'GET'})
+            const manifestRequest = await fetch(msg.data.modelUrl, {
+                method: 'GET'
+            })
             const manifestResponse = await manifestRequest.json()
             hotWords = manifestResponse.words
             model = await tf.loadLayersModel(msg.data.modelUrl)
@@ -24,12 +26,25 @@ onmessage = async function (msg) {
 }
 
 let tensor
+let noSpam = false
 function infer(features) {
-    tensor = tf.tensor3d(new Array(features))
-    const inference = model.predict(tensor)
-    const value = Array.from(inference.dataSync())
-    const infered = hotWords.map((val,index)=>{
-        return [val, value[index]]
-    })
-    postMessage(infered)
+    if (!noSpam) {
+        noSpam = !noSpam
+        setTimeout(() => {
+            noSpam = !noSpam
+        }, 0) // Prevents for firying multiple hotword events. Even if hotword node is paused. This is ugly but necessary
+        tensor = tf.tensor3d(new Array(features))
+        const inference = model.predict(tensor)
+        const inferedArray = Array.from(inference.dataSync())
+        // 1st map Constructs array ["hotWordName":float(0->1)]
+        // 2nd map Checks if any value > 0.8 (threshold)
+        hotWords.map((hotWord, index) => {
+            return [hotWord, inferedArray[index]]
+        }).map((val) => {
+            if (val[1] > 0.8) {
+                postMessage(val[0]) // name of the spotted hotword
+            }
+        })
+    }
+
 }

@@ -3,6 +3,7 @@ import Worker from '../workers/features.blob.js'
 import NodeError from '../nodes/error.js'
 
 const handler = function (nodeEvent) {
+    if (this.status == "non-emitting") return
     //accumulate audioframes until analysis window is full
     if (this.windowBuffer.length == this.windowLength) {
         this.workerRuntime.postMessage({
@@ -64,5 +65,4 @@ export default class FeaturesExtractor extends Node {
         }
 
     }
-
 }

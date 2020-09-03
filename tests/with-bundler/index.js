@@ -4,18 +4,14 @@ const VADHandler = function (speakingEvent) {
     speakingEvent.detail ? (document.getElementById("VADLed").classList.add("led-red"), document.getElementById("VADLed").classList.remove("led-green")) : (document.getElementById("VADLed").classList.add("led-green"), document.getElementById("VADLed").classList.remove("led-red"))
 }
 
-const HotwordHandler = function (hotwordEvent) {
-    hotwordEvent.detail.map((val)=>{
-        if (val[1] > 0.7){
-            hotword.pause()
-            hotword.removeEventListener("hotword", HotwordHandler)
-            document.getElementById("LinTO").innerHTML = val[0]
-            document.getElementById("LinTO").setAttribute('style', 'display:inline-block;')
-        }
-    })
+const HotwordHandler = function (hotWordEvent) {
+    hotword.pause()
+    document.getElementById("LinTO").innerHTML = hotWordEvent.detail
+    document.getElementById("LinTO").setAttribute('style', 'display:inline-block;')
+
     setTimeout(() => {
-        document.getElementById("LinTO").setAttribute('style', 'display:none;')
         hotword.resume()
+        document.getElementById("LinTO").setAttribute('style', 'display:none;')
         hotword.addEventListener("hotword", HotwordHandler)
     }, 1500)
 }
