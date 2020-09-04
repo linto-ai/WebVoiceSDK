@@ -1,5 +1,5 @@
 {
-    "words": ["linto"],
+    "words":["linto","firefox","snips"],
     "format": "layers-model",
     "generatedBy": "keras v2.2.4-tf",
     "convertedBy": "TensorFlow.js Converter v2.0.1.post1",
@@ -9,7 +9,7 @@
         "model_config": {
             "class_name": "Sequential",
             "config": {
-                "name": "sequential_1",
+                "name": "sequential",
                 "layers": [{
                     "class_name": "GRU",
                     "config": {
@@ -59,7 +59,7 @@
                 }, {
                     "class_name": "Dense",
                     "config": {
-                        "name": "dense_1",
+                        "name": "dense",
                         "trainable": true,
                         "dtype": "float32",
                         "units": 20,
@@ -87,7 +87,7 @@
                         "name": "output",
                         "trainable": true,
                         "dtype": "float32",
-                        "units": 1,
+                        "units": 3,
                         "activation": "sigmoid",
                         "use_bias": true,
                         "kernel_initializer": {
@@ -132,11 +132,11 @@
     "weightsManifest": [{
         "paths": ["group1-shard1of1.bin"],
         "weights": [{
-            "name": "dense_1/kernel",
+            "name": "dense/kernel",
             "shape": [30, 20],
             "dtype": "float32"
         }, {
-            "name": "dense_1/bias",
+            "name": "dense/bias",
             "shape": [20],
             "dtype": "float32"
         }, {
@@ -153,11 +153,11 @@
             "dtype": "float32"
         }, {
             "name": "output/kernel",
-            "shape": [20, 1],
+            "shape": [20, 3],
             "dtype": "float32"
         }, {
             "name": "output/bias",
-            "shape": [1],
+            "shape": [3],
             "dtype": "float32"
         }]
     }]

@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "parcel build src/webspeechsdk.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webspeechsdk-linto.min.js",
-    "test": "parcel tests/with-bundler/index.html --out-dir dev-build --log-level 4 --no-cache",
-    "new": "parcel src/web-speech-sdk/index.html --out-dir dev-build --no-cache"
+    "test": "parcel tests/with-bundler/index.html --out-dir dev-build --log-level 4 --no-cache"
   },
   "repository": {
     "type": "git",

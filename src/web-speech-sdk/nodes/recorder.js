@@ -1,31 +1,25 @@
 import Node from '../nodes/node.js'
 
-
 function audioBufferToWav(buffer, opt) {
     opt = opt || {}
-
     var numChannels = buffer.numberOfChannels
     var sampleRate = buffer.sampleRate
     var format = opt.float32 ? 3 : 1
     var bitDepth = format === 3 ? 32 : 16
-
     var result
     if (numChannels === 2) {
         result = interleave(buffer.getChannelData(0), buffer.getChannelData(1))
     } else {
         result = buffer.getChannelData(0)
     }
-
     return encodeWAV(result, format, sampleRate, numChannels, bitDepth)
 }
 
 function encodeWAV(samples, format, sampleRate, numChannels, bitDepth) {
     var bytesPerSample = bitDepth / 8
     var blockAlign = numChannels * bytesPerSample
-
     var buffer = new ArrayBuffer(44 + samples.length * bytesPerSample)
     var view = new DataView(buffer)
-
     /* RIFF identifier */
     writeString(view, 0, 'RIFF')
     /* RIFF chunk length */
@@ -57,17 +51,14 @@ function encodeWAV(samples, format, sampleRate, numChannels, bitDepth) {
     } else {
         writeFloat32(view, 44, samples)
     }
-
     return buffer
 }
 
 function interleave(inputL, inputR) {
     var length = inputL.length + inputR.length
     var result = new Float32Array(length)
-
     var index = 0
     var inputIndex = 0
-
     while (index < length) {
         result[index++] = inputL[inputIndex]
         result[index++] = inputR[inputIndex]
@@ -122,7 +113,6 @@ export default class recorder extends Node {
     async start(node) {
         await super.start(node)
         if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
-            this.context = new AudioContext()
             this.rawBuffer = []
         }
         if (this.hookedOn.type == "featuresExtractor"){
@@ -147,11 +137,16 @@ export default class recorder extends Node {
         }
     }
 
-    clean() {
+    cleanBuffer() {
         this.rawBuffer = []
     }
 
+    getBuffer(){
+        return this.rawBuffer
+    }
+
     play() {
+        this.context = new AudioContext()
         let replaySource = this.context.createBufferSource()
         replaySource.buffer = this.audioBuffer
         // Playback default
@@ -159,8 +154,40 @@ export default class recorder extends Node {
         replaySource.start(0)
     }
 
+    // getFile() {
+    //     let link = window.document.createElement('a')
+    //     let url
+    //     if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
+    //         let wavFile = audioBufferToWav(this.audioBuffer)
+    //         // our final blob
+    //         this.blob = new Blob([wavFile], {
+    //             type: 'audio/wav'
+    //         })
+    //         link.download = this.hookedOn.type + ".wav"
+    //     }
+    //     if (this.hookedOn.type == "featuresExtractor"){
+    //         let featuresString = JSON.stringify(this.features)
+    //         link.download = this.hookedOn.type + '.json'
+    //         this.blob = new Blob([featuresString],{type: 'application/json'})
+    //     }
+    //     if (this.hookedOn.type == "hotword"){
+    //         let infersString = JSON.stringify(this.infers)
+    //         link.download = this.hookedOn.type + '.json'
+    //         this.blob = new Blob([infersString],{type: 'application/json'})
+    //     }
+    //     link.textContent = this.hookedOn.type
+    //     url = URL.createObjectURL(this.blob)
+    //     link.href = url
+    //     let click = document.createEvent("Event")
+    //     click.initEvent("click", true, true)
+    //     link.dispatchEvent(click)
+    //     // Attach the link to the DOM
+    //     document.body.appendChild(link)
+    //     let hr = window.document.createElement('hr')
+    //     document.body.appendChild(hr)
+    // }
+
     getFile() {
-        let link = window.document.createElement('a')
         let url
         if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
             let wavFile = audioBufferToWav(this.audioBuffer)
@@ -168,28 +195,16 @@ export default class recorder extends Node {
             this.blob = new Blob([wavFile], {
                 type: 'audio/wav'
             })
-            link.download = this.hookedOn.type + ".wav"
         }
         if (this.hookedOn.type == "featuresExtractor"){
             let featuresString = JSON.stringify(this.features)
-            link.download = this.hookedOn.type + '.json'
             this.blob = new Blob([featuresString],{type: 'application/json'})
         }
         if (this.hookedOn.type == "hotword"){
             let infersString = JSON.stringify(this.infers)
-            link.download = this.hookedOn.type + '.json'
             this.blob = new Blob([infersString],{type: 'application/json'})
         }
-        link.textContent = this.hookedOn.type
         url = URL.createObjectURL(this.blob)
-        link.href = url
-        let click = document.createEvent("Event")
-        click.initEvent("click", true, true)
-        link.dispatchEvent(click)
-        // Attach the link to the DOM
-        document.body.appendChild(link)
-        let hr = window.document.createElement('hr')
-        document.body.appendChild(hr)
-
+        return url
     }
 }
