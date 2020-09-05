@@ -4,7 +4,7 @@
     <title>Some tests</title>
     <style>
         .linto {
-            font-size: 10rem;
+            font-size: 5rem;
             display: none;
         }
 
@@ -82,37 +82,33 @@
 </head>
 
 <body>
+    <div class="linto" id="LinTO">
+        LinTO !
+    </div>
+    <hr />
     <div>
-        <button id="start">Start all</button>
-        <button id="stop">Stop all</button>
+        <button id="start">Start full hotword pipeline</button>
+        <button id="stop">Stop</button>
         <button id="startrecord">Record events</button>
         <button id="stoprecord">Stop recording</button>
         <button id="lintomodel">Use LinTO model</button>
         <button id="slinfoxmodel">Use LinTO-Snips-Firefox model</button>
     </div>
     <hr />
-    <div>
-        <label for="mic">Mic options :</label>
-        <textarea id="mic" rows="10" cols="50"></textarea>
+    <div class="linto" id="LinTO">
+        LinTO !
     </div>
-    <hr />
     <div>
-        <label for="downsampler">Downsampling options :</label>
-        <textarea id="downsampler" rows="10" cols="50"></textarea>
+        <label for="mic">Microphone options :</label>
+        <textarea id="mic" rows="10" cols="50"></textarea>
     </div>
     <hr />
     <div>
         <div class="led-box">
             <div id="VADLed" class="led-green" style="display: none;"></div>
         </div>
-        <label for="useVAD">VAD options :</label>
+        <label for="useVAD">Voice Activity Detection :</label>
         <textarea id="VAD" rows="10" cols="50"></textarea>
-    </div>
-    <hr />
-    <div>
-        <div class="linto" id="LinTO">
-            LinTO !
-        </div>
     </div>
 
 

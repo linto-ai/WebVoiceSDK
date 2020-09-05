@@ -14,7 +14,7 @@ const HotwordHandler = function (hotWordEvent) {
 }
 window.start = async function () {
     window.mic = new webVoiceSDK.Mic(JSON.parse(document.getElementById('mic').value))
-    window.downSampler = new webVoiceSDK.DownSampler(JSON.parse(document.getElementById('downsampler').value))
+    window.downSampler = new webVoiceSDK.DownSampler()
     window.vad = new webVoiceSDK.Vad(JSON.parse(document.getElementById('VAD').value))
     window.speechPreemphaser = new webVoiceSDK.SpeechPreemphaser()
     window.feat = new webVoiceSDK.FeaturesExtractor()
@@ -98,7 +98,6 @@ window.showLink = function (recInstance) {
 
 // HTML Interface
 document.getElementById('mic').value = JSON.stringify(webVoiceSDK.Mic.defaultOptions, false, 4)
-document.getElementById('downsampler').value = JSON.stringify(webVoiceSDK.DownSampler.defaultOptions, false, 4)
 document.getElementById('VAD').value = JSON.stringify(webVoiceSDK.Vad.defaultOptions, false, 4)
 
 
