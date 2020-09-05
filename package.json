@@ -1,7 +1,7 @@
 {
   "name": "webvoicesdk",
   "version": "1.0.0",
-  "description": "",
+  "description": "Buildings block for voice-enabled applications in the browser",
   "main": "index.js",
   "scripts": {
     "build": "parcel build src/webVoiceSDK.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js && cp dist/webVoiceSDK-linto.min.js tests/static-html/",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/damienlaine/webvoicesdk.git"
+    "url": "git+https://github.com/linto-ai/WebVoiceSDK.git"
   },
-  "author": "",
+  "author": "Damien Laine - LINAGORA",
   "license": "AGPLV3",
   "bugs": {
-    "url": "https://github.com/damienlaine/webvoicesdk/issues"
+    "url": "https://github.com/linto-ai/WebVoiceSDK/issues"
   },
-  "homepage": "https://github.com/damienlaine/webvoicesdk#readme",
+  "homepage": "https://github.com/linto-ai/WebVoiceSDK#readme",
   "devDependencies": {
     "@tensorflow/tfjs": "^2.3.0",
     "@tensorflow/tfjs-backend-cpu": "^2.3.0",
