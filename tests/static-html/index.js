@@ -2,35 +2,29 @@ const VADHandler = function (speakingEvent) {
     speakingEvent.detail ? (document.getElementById("VADLed").classList.add("led-red"), document.getElementById("VADLed").classList.remove("led-green")) : (document.getElementById("VADLed").classList.add("led-green"), document.getElementById("VADLed").classList.remove("led-red"))
 }
 
-const HotwordHandler = function (hotwordEvent) {
-    hotwordEvent.detail.map((val)=>{
-        if (val[1] > 0.7){
-            hotword.pause()
-            hotword.removeEventListener("hotword", HotwordHandler)
-            document.getElementById("LinTO").innerHTML = val[0]
-            document.getElementById("LinTO").setAttribute('style', 'display:inline-block;')
-        }
-    })
+const HotwordHandler = function (hotWordEvent) {
+    hotword.pause()
+    document.getElementById("LinTO").innerHTML = hotWordEvent.detail
+    document.getElementById("LinTO").setAttribute('style', 'display:inline-block;')
+
     setTimeout(() => {
-        document.getElementById("LinTO").setAttribute('style', 'display:none;')
         hotword.resume()
-        hotword.addEventListener("hotword", HotwordHandler)
+        document.getElementById("LinTO").setAttribute('style', 'display:none;')
     }, 1500)
 }
-
 window.start = async function () {
-    window.mic = new webSpeechSDK.Mic(JSON.parse(document.getElementById('mic').value))
-    window.downSampler = new webSpeechSDK.DownSampler(JSON.parse(document.getElementById('downsampler').value))
-    window.vad = new webSpeechSDK.Vad(JSON.parse(document.getElementById('VAD').value))
-    window.speechPreemphaser = new webSpeechSDK.SpeechPreemphaser()
-    window.feat = new webSpeechSDK.FeaturesExtractor()
-    window.hotword = new webSpeechSDK.Hotword()
+    window.mic = new webVoiceSDK.Mic(JSON.parse(document.getElementById('mic').value))
+    window.downSampler = new webVoiceSDK.DownSampler(JSON.parse(document.getElementById('downsampler').value))
+    window.vad = new webVoiceSDK.Vad(JSON.parse(document.getElementById('VAD').value))
+    window.speechPreemphaser = new webVoiceSDK.SpeechPreemphaser()
+    window.feat = new webVoiceSDK.FeaturesExtractor()
+    window.hotword = new webVoiceSDK.Hotword()
     await downSampler.start(mic)
     await vad.start(mic)
     await speechPreemphaser.start(downSampler)
     await feat.start(speechPreemphaser)
     await hotword.start(feat, vad)
-    await hotword.loadModel(hotword.availableModels["lintoBeta"])
+    await hotword.loadModel(hotword.availableModels["linto"])
     await mic.start()
     document.getElementById("VADLed").setAttribute('style', 'display:inline-block;')
     vad.addEventListener("speakingStatus", VADHandler)
@@ -48,11 +42,11 @@ window.stop = async function () {
 }
 
 window.rec = async function () {
-    window.recMic = new webSpeechSDK.Recorder()
-    window.recFeatures = new webSpeechSDK.Recorder()
-    window.recDownsampler = new webSpeechSDK.Recorder()
-    window.recSpeechPreemphaser = new webSpeechSDK.Recorder()
-    window.recHw = new webSpeechSDK.Recorder()
+    window.recMic = new webVoiceSDK.Recorder()
+    window.recFeatures = new webVoiceSDK.Recorder()
+    window.recDownsampler = new webVoiceSDK.Recorder()
+    window.recSpeechPreemphaser = new webVoiceSDK.Recorder()
+    window.recHw = new webVoiceSDK.Recorder()
     await recMic.start(mic)
     await recHw.start(hotword)
     await recFeatures.start(feat)
@@ -72,24 +66,52 @@ window.stopRec = async function () {
     recSpeechPreemphaser.stopRec()
     recHw.stopRec()
 
-    recMic.getFile()
-    recFeatures.getFile()
-    recDownsampler.getFile()
-    recSpeechPreemphaser.getFile()
-    recHw.getFile()
+    showLink(recMic)
+    showLink(recFeatures)
+    showLink(recDownsampler)
+    showLink(recSpeechPreemphaser)
+    showLink(recHw)
 }
 
-
-
+window.showLink = function (recInstance) {
+    let url = recInstance.getFile()
+    let link = window.document.createElement('a')
+    link.href = url
+    if (recInstance.hookedOn.type == "mic" || recInstance.hookedOn.type == "downSampler" || recInstance.hookedOn.type == "speechPreemphaser") {
+        link.download = recInstance.hookedOn.type + ".wav"
+    }
+    if (recInstance.hookedOn.type == "featuresExtractor") {
+        link.download = recInstance.hookedOn.type + '.json'
+    }
+    if (recInstance.hookedOn.type == "hotword") {
+        link.download = recInstance.hookedOn.type + '.json'
+    }
+    link.textContent = recInstance.hookedOn.type
+    let click = document.createEvent("Event")
+    click.initEvent("click", true, true)
+    link.dispatchEvent(click)
+    // Attach the link to the DOM
+    document.body.appendChild(link)
+    let hr = window.document.createElement('hr')
+    document.body.appendChild(hr)
+}
 
 // HTML Interface
-document.getElementById('mic').value = JSON.stringify(webSpeechSDK.Mic.defaultOptions, false, 4)
-document.getElementById('downsampler').value = JSON.stringify(webSpeechSDK.DownSampler.defaultOptions, false, 4)
-document.getElementById('VAD').value = JSON.stringify(webSpeechSDK.Vad.defaultOptions, false, 4)
+document.getElementById('mic').value = JSON.stringify(webVoiceSDK.Mic.defaultOptions, false, 4)
+document.getElementById('downsampler').value = JSON.stringify(webVoiceSDK.DownSampler.defaultOptions, false, 4)
+document.getElementById('VAD').value = JSON.stringify(webVoiceSDK.Vad.defaultOptions, false, 4)
 
 
 document.getElementById("start").onclick = async () => {
     start()
+}
+
+document.getElementById("lintomodel").onclick = async () => {
+    hotword.loadModel(hotword.availableModels["linto"])
+}
+
+document.getElementById("slinfoxmodel").onclick = async () => {
+    hotword.loadModel(hotword.availableModels["slinfox"])
 }
 
 document.getElementById("stop").onclick = async () => {

@@ -1,10 +1,10 @@
 {
-  "name": "web-speech-sdk",
+  "name": "webvoicesdk",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "parcel build src/webspeechsdk.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webspeechsdk-linto.min.js",
+    "build": "parcel build src/webVoiceSDK.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js && cp dist/webVoiceSDK-linto.min.js tests/static-html/",
     "test": "parcel tests/with-bundler/index.html --out-dir dev-build --log-level 4 --no-cache"
   },
   "repository": {

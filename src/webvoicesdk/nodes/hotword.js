@@ -4,7 +4,7 @@ import NodeError from '../nodes/error.js'
 //uses a specific parcel bundler plugin to get the blob URL of the backend wasm file
 import tfWasm from '../../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm' 
 // import all hotword models using a specific parcel bundler plugin
-import models from "../../../hotwords-nonused/**/*.bin"
+import models from "../../../hotwords/**/*.bin"
 
 const handler = function (mfcc) {
     if (this.mfccBuffer.length < 30) {

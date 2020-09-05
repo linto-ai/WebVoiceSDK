@@ -114,6 +114,7 @@ export default class recorder extends Node {
         await super.start(node)
         if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
             this.rawBuffer = []
+            this.context = new AudioContext()
         }
         if (this.hookedOn.type == "featuresExtractor"){
             this.features = []
@@ -123,7 +124,6 @@ export default class recorder extends Node {
             this.infers = []
         }
     }
-
 
     rec() {
         if (!this.recOn) this.recOn = true
@@ -146,46 +146,12 @@ export default class recorder extends Node {
     }
 
     play() {
-        this.context = new AudioContext()
         let replaySource = this.context.createBufferSource()
         replaySource.buffer = this.audioBuffer
         // Playback default
         replaySource.connect(this.context.destination)
         replaySource.start(0)
     }
-
-    // getFile() {
-    //     let link = window.document.createElement('a')
-    //     let url
-    //     if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
-    //         let wavFile = audioBufferToWav(this.audioBuffer)
-    //         // our final blob
-    //         this.blob = new Blob([wavFile], {
-    //             type: 'audio/wav'
-    //         })
-    //         link.download = this.hookedOn.type + ".wav"
-    //     }
-    //     if (this.hookedOn.type == "featuresExtractor"){
-    //         let featuresString = JSON.stringify(this.features)
-    //         link.download = this.hookedOn.type + '.json'
-    //         this.blob = new Blob([featuresString],{type: 'application/json'})
-    //     }
-    //     if (this.hookedOn.type == "hotword"){
-    //         let infersString = JSON.stringify(this.infers)
-    //         link.download = this.hookedOn.type + '.json'
-    //         this.blob = new Blob([infersString],{type: 'application/json'})
-    //     }
-    //     link.textContent = this.hookedOn.type
-    //     url = URL.createObjectURL(this.blob)
-    //     link.href = url
-    //     let click = document.createEvent("Event")
-    //     click.initEvent("click", true, true)
-    //     link.dispatchEvent(click)
-    //     // Attach the link to the DOM
-    //     document.body.appendChild(link)
-    //     let hr = window.document.createElement('hr')
-    //     document.body.appendChild(hr)
-    // }
 
     getFile() {
         let url
@@ -206,5 +172,16 @@ export default class recorder extends Node {
         }
         url = URL.createObjectURL(this.blob)
         return url
+    }
+
+    punchIn(){
+        this.cleanBuffer()
+        this.rec()
+    }
+
+    punchOut(){
+        this.stopRec()
+        this.cleanBuffer
+        return this.getFile()
     }
 }
