@@ -1,8 +1,24 @@
 {
-  "name": "webvoicesdk",
+  "name": "@linto-ai/webvoicesdk",
   "version": "1.0.0",
   "description": "Buildings block for voice-enabled applications in the browser",
-  "main": "index.js",
+  "author": "Damien Laine - LINAGORA",
+  "keywords": [
+    "speech-recognition",
+    "wake-word-detection",
+    "hotword",
+    "machine-learning",
+    "voice-commands",
+    "voice-activity-detection",
+    "voice-control",
+    "record-audio",
+    "voice-assistant",
+    "offline-speech-recognition",
+    "mfcc",
+    "features-exctraction"
+  ],
+  "main": "src/webvoicesdk.js",
+  "browser": "dist/webVoiceSDK-linto.min.js",
   "scripts": {
     "build": "parcel build src/webVoiceSDK.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js && cp dist/webVoiceSDK-linto.min.js tests/static-html/",
     "test": "parcel tests/with-bundler/index.html --out-dir dev-build --log-level 4 --no-cache"
@@ -11,7 +27,6 @@
     "type": "git",
     "url": "git+https://github.com/linto-ai/WebVoiceSDK.git"
   },
-  "author": "Damien Laine - LINAGORA",
   "license": "AGPLV3",
   "bugs": {
     "url": "https://github.com/linto-ai/WebVoiceSDK/issues"
