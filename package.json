@@ -18,6 +18,7 @@
     "features-exctraction"
   ],
   "main": "src/webvoicesdk.js",
+  "module": "src/webvoicesdk.js",
   "browser": "dist/webVoiceSDK-linto.min.js",
   "scripts": {
     "build": "parcel build src/webVoiceSDK.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js",
