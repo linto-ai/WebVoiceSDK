@@ -20,7 +20,7 @@
   "main": "src/webvoicesdk.js",
   "browser": "dist/webVoiceSDK-linto.min.js",
   "scripts": {
-    "build": "parcel build src/webVoiceSDK.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js && cp dist/webVoiceSDK-linto.min.js tests/static-html/",
+    "build": "parcel build src/webVoiceSDK.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js",
     "test": "parcel tests/with-bundler/index.html --out-dir dev-build --log-level 4 --no-cache"
   },
   "repository": {
