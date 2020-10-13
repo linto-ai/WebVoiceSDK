@@ -3,7 +3,7 @@ import NodeError from '../nodes/error.js'
 
 export default class Mic extends Node {
     static defaultOptions = {
-        sampleRate: 44100,
+        //sampleRate: 44100, 
         frameSize: 4096,
         constraints: {
             echoCancellation: true,
@@ -13,7 +13,7 @@ export default class Mic extends Node {
     }
 
     constructor({
-        sampleRate = 44100,
+        //sampleRate = 44100,
         frameSize = 4096,
         constraints = {
             echoCancellation: true,
@@ -22,15 +22,21 @@ export default class Mic extends Node {
         }
     } = {}) {
         super()
+        // For cross-browser compat, i will now use only default sampleRate.
+        // I instanciante a Dummy AudioContext to fetch the browser / OS / Device default value
+        //@TODO : CLEAN THIS DIRTY HACK. Quite complicated though...
+        this.hookableOnNodeTypes = [] //none, this node will connect to getUserMedia stream
+        let DummyAudioContext = window.AudioContext || window.webkitAudioContext
+        let dummyAudioCtx = new DummyAudioContext()
         this.type = "mic"
         this.event = "micFrame" //emitted
         this.hookedOn = null
-        this.hookableOnNodeTypes = [] //none, this node will connect to getUserMedia stream
         this.options = {
-            sampleRate,
+            sampleRate: dummyAudioCtx.sampleRate,
             frameSize,
             constraints
         }
+        dummyAudioCtx.close()
     }
 
     async start() {
@@ -43,9 +49,11 @@ export default class Mic extends Node {
             },
         })
         this.hookedOn = true
+
         this.audioContext = new(window.AudioContext || window.webkitAudioContext)({
             sampleRate: this.options.sampleRate,
         })
+        this.options.sampleRate = this.audioContext.sampleRate
         this.mediaStreamSource = this.audioContext.createMediaStreamSource(this.stream)
         this.micFrameGenerator = this.audioContext.createScriptProcessor(this.options.frameSize, 1, 1)
         if (this.status == "non-emitting" && this.hookedOn) {
@@ -59,6 +67,7 @@ export default class Mic extends Node {
             this.micFrameGenerator.connect(this.audioContext.destination)
             this.status = "emitting"
         }
+        return Promise.resolve()
     }
 
     resume() {

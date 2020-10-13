@@ -1,4 +1,4 @@
-import webVoiceSDK from '../../src/webVoiceSDK.js'
+import webVoiceSDK from '../../src/webvoicesdk.js'
 
 const VADHandler = function (speakingEvent) {
     speakingEvent.detail ? (document.getElementById("VADLed").classList.add("led-red"), document.getElementById("VADLed").classList.remove("led-green")) : (document.getElementById("VADLed").classList.add("led-green"), document.getElementById("VADLed").classList.remove("led-red"))
@@ -25,7 +25,7 @@ window.start = async function () {
     await vad.start(mic)
     await speechPreemphaser.start(downSampler)
     await feat.start(speechPreemphaser)
-    await hotword.start(feat, vad)
+    await hotword.start(feat, vad, 0.9)
     await hotword.loadModel(hotword.availableModels["linto"])
     await mic.start()
     document.getElementById("VADLed").setAttribute('style', 'display:inline-block;')

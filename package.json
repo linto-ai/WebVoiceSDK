@@ -1,7 +1,7 @@
 {
   "name": "@linto-ai/webvoicesdk",
-  "version": "1.0.0",
-  "description": "Buildings block for voice-enabled applications in the browser",
+  "version": "1.1.0",
+  "description": "Building blocks for voice-enabled applications in the browser",
   "author": "Damien Laine - LINAGORA",
   "keywords": [
     "speech-recognition",
@@ -21,7 +21,7 @@
   "module": "src/webvoicesdk.js",
   "browser": "dist/webVoiceSDK-linto.min.js",
   "scripts": {
-    "build": "parcel build src/webVoiceSDK.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js",
+    "build": "parcel build src/webvoicesdk.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js",
     "test": "parcel tests/with-bundler/index.html --out-dir dev-build --log-level 4 --no-cache"
   },
   "repository": {
@@ -34,10 +34,10 @@
   },
   "homepage": "https://github.com/linto-ai/WebVoiceSDK#readme",
   "devDependencies": {
-    "@tensorflow/tfjs": "^2.3.0",
-    "@tensorflow/tfjs-backend-cpu": "^2.3.0",
-    "@tensorflow/tfjs-backend-wasm": "^2.3.0",
-    "@tensorflow/tfjs-backend-webgl": "^2.3.0",
+    "@tensorflow/tfjs": "^2.6.0",
+    "@tensorflow/tfjs-backend-cpu": "^2.6.0",
+    "@tensorflow/tfjs-backend-wasm": "^2.6.0",
+    "@tensorflow/tfjs-backend-webgl": "^2.6.0",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-tensorflowjs-blob": "^1.0.0",
     "parcel-plugin-wasm-blob": "^1.0.0",

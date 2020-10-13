@@ -1,8 +1,9 @@
-self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.3.0/dist/tf.min.js')
-self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.3.0/dist/tf-backend-wasm.min.js')
+self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.6.0/dist/tf.min.js')
+self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.6.0/dist/tf-backend-wasm.min.js')
 
 let model
 let hotWords
+let threshold
 onmessage = async function (msg) {
     switch (msg.data.method) {
         case "process":
@@ -10,7 +11,14 @@ onmessage = async function (msg) {
             infer(msg.data.features)
             break
         case "configure":
-            await tf.wasm.setWasmPath(msg.data.wasmPath)
+            threshold = msg.data.threshold
+            await tf.wasm.setWasmPaths({
+                'tfjs-backend-wasm.wasm': msg.data.wasmPaths.tfWasm,
+                'tfjs-backend-wasm-simd.wasm': msg.data.wasmPaths.tfWasmSimd,
+                'tfjs-backend-wasm-threaded-simd.wasm': msg.data.wasmPaths.tfWasmThreadedSimd,
+                });
+            // const simdSupported = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT')
+            // const threadsSupported = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT')
             await tf.setBackend('wasm')
             break
         case "loadModel":
@@ -37,11 +45,11 @@ function infer(features) {
         const inference = model.predict(tensor)
         const inferedArray = Array.from(inference.dataSync())
         // 1st map Constructs array ["hotWordName":float(0->1)]
-        // 2nd map Checks if any value > 0.8 (threshold)
+        // 2nd map Checks if any value > threshold
         hotWords.map((hotWord, index) => {
             return [hotWord, inferedArray[index]]
         }).map((val) => {
-            if (val[1] > 0.8) {
+            if (val[1] > threshold) {
                 postMessage(val[0]) // name of the spotted hotword
             }
         })
