@@ -1,6 +1,6 @@
 {
   "name": "@linto-ai/webvoicesdk",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Building blocks for voice-enabled applications in the browser",
   "author": "Damien Laine - LINAGORA",
   "keywords": [

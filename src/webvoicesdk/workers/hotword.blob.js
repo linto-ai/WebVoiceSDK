@@ -16,7 +16,7 @@ onmessage = async function (msg) {
                 'tfjs-backend-wasm.wasm': msg.data.wasmPaths.tfWasm,
                 'tfjs-backend-wasm-simd.wasm': msg.data.wasmPaths.tfWasmSimd,
                 'tfjs-backend-wasm-threaded-simd.wasm': msg.data.wasmPaths.tfWasmThreadedSimd,
-                });
+            });
             // const simdSupported = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT')
             // const threadsSupported = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT')
             await tf.setBackend('wasm')
@@ -33,7 +33,7 @@ onmessage = async function (msg) {
     }
 }
 
-let tensor
+
 let noSpam = false
 function infer(features) {
     if (!noSpam) {
@@ -41,11 +41,17 @@ function infer(features) {
         setTimeout(() => {
             noSpam = !noSpam
         }, 0) // Prevents for firying multiple hotword events. Even if hotword node is paused. This is ugly but necessary
-        tensor = tf.tensor3d(new Array(features))
-        const inference = model.predict(tensor)
-        const inferedArray = Array.from(inference.dataSync())
-        // 1st map Constructs array ["hotWordName":float(0->1)]
-        // 2nd map Checks if any value > threshold
+        let tensor
+        let inference
+        let inferedArray
+        tf.tidy((tensor) => {
+            tensor = tf.tensor3d(new Array(features))
+            inference = model.predict(tensor)
+            inferedArray = Array.from(inference.dataSync())
+            // 1st map Constructs array ["hotWordName":float(0->1)]
+            // 2nd map Checks if any value > threshold
+            tensor.dispose()
+        })
         hotWords.map((hotWord, index) => {
             return [hotWord, inferedArray[index]]
         }).map((val) => {
