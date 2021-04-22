@@ -1,4 +1,5 @@
 import Node from '../nodes/node.js'
+const DummyAudioContext = window.AudioContext || window.webkitAudioContext
 
 function audioBufferToWav(buffer, opt) {
     opt = opt || {}
@@ -114,7 +115,7 @@ export default class recorder extends Node {
         await super.start(node)
         if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
             this.rawBuffer = []
-            this.context = new AudioContext()
+            this.context = new DummyAudioContext()
         }
         if (this.hookedOn.type == "featuresExtractor"){
             this.features = []
