@@ -114,7 +114,7 @@ export default class recorder extends Node {
         await super.start(node)
         if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
             this.rawBuffer = []
-            this.context = new AudioContext()
+            this.context = new(window.AudioContext || window.webkitAudioContext)() //fix for Safari
         }
         if (this.hookedOn.type == "featuresExtractor"){
             this.features = []
