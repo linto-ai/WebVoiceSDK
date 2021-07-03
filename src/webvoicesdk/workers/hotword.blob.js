@@ -1,5 +1,5 @@
-self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.6.0/dist/tf.min.js')
-self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@2.6.0/dist/tf-backend-wasm.js') //.min.js not working when using SIMD/Threaded flags ?
+self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.7.0/dist/tf.min.js')
+self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/tf-backend-wasm.min.js') //.min.js not working when using SIMD/Threaded flags ?
 
 let model
 let hotWords
