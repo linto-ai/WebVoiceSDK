@@ -10,6 +10,12 @@ export default class Node extends EventTarget {
         if (this.hookedOn) throw new NodeError(`node ${this.type} is already hooked on ${this.hookedOn}, call stop() first`)
         if (!node) throw new NodeError(`${this.type} requires a node argument to hook on`)
         if (node && !this.hookableOnNodeTypes.includes(node.type)) throw new NodeError(`${this.type} node cannot hook on ${node.type}`)
+        this.startWorker()
+        this.hookedOn = node
+        this.resume()
+    }
+
+    startWorker() {
         if (this.worker) {
             this.workerRuntime = this.worker.init()
             this.workerRuntime.onmessage = (event) => {
@@ -18,8 +24,6 @@ export default class Node extends EventTarget {
                 }))
             }
         }
-        this.hookedOn = node
-        this.resume()
     }
 
     stop() {
