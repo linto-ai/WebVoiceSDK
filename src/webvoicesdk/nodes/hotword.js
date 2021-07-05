@@ -8,7 +8,7 @@ import tfWasm from '../../../node_modules/@tensorflow/tfjs-backend-wasm/dist/tfj
 import models from "../../../hotwords/**/*.bin"
 
 const handler = function (mfcc) {
-    if (this.mfccBuffer.length < 30) {
+    if (this.mfccBuffer.length < this.mfccBufferSize) {
         this.mfccBuffer.push(mfcc.detail)
     } else {
         this.mfccBuffer.shift()
@@ -68,10 +68,19 @@ export default class HotWord extends Node {
         }
     }
 
-    loadModel(modelUrl) {
+    async loadModel(modelUrl) {
+        //fetches the model manifest
+        const manifestRequest = await fetch(modelUrl, {
+            method: 'GET'
+        })
+        const manifest = await manifestRequest.json()
+        // Sets number of MFCC frames
+        this.mfccBufferSize = manifest.modelTopology.model_config.config.layers[0].config.batch_input_shape[1]
         this.workerRuntime.postMessage({
             method: "loadModel",
-            modelUrl
+            modelUrl,
+            words:manifest.words
         })
+        return Promise.resolve()
     }
 }

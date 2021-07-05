@@ -1,6 +1,7 @@
 self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.7.0/dist/tf.min.js')
 self.importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@3.7.0/dist/tf-backend-wasm.min.js') //.min.js not working when using SIMD/Threaded flags ?
 
+
 let model
 let hotWords
 let threshold
@@ -17,17 +18,14 @@ onmessage = async function (msg) {
                 'tfjs-backend-wasm-simd.wasm': msg.data.wasmPaths.tfWasmSimd,
                 'tfjs-backend-wasm-threaded-simd.wasm': msg.data.wasmPaths.tfWasmThreadedSimd,
             });
-            // const simdSupported = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT')
-            // const threadsSupported = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT')
+            //const simdSupported = await tf.env().getAsync('WASM_HAS_SIMD_SUPPORT')
+            //const threadsSupported = await tf.env().getAsync('WASM_HAS_MULTITHREAD_SUPPORT')
             await tf.setBackend('wasm')
             break
         case "loadModel":
+            await tf.enableProdMode()
             await tf.ready()
-            const manifestRequest = await fetch(msg.data.modelUrl, {
-                method: 'GET'
-            })
-            const manifestResponse = await manifestRequest.json()
-            hotWords = manifestResponse.words
+            hotWords = msg.data.words
             model = await tf.loadLayersModel(msg.data.modelUrl)
             break
     }
