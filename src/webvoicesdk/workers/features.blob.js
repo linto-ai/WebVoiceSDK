@@ -217,12 +217,12 @@ let fft = function (signal) {
 
 var prepareSignalWithSpectrum = function (signal, bufferSize) {
     var preparedSignal = {};
-    preparedSignal.complexSpectrum = fft(signal.slice(0, bufferSize / 2));
-    preparedSignal.powSpectrum = new Float32Array(bufferSize / 4 + 1);
-    for (var i = 0; i < bufferSize / 4 + 1; i++) {
+    preparedSignal.complexSpectrum = fft(signal.slice(0, bufferSize));
+    preparedSignal.powSpectrum = new Float32Array(bufferSize / 2 + 1);
+    for (var i = 0; i < bufferSize / 2 + 1; i++) {
         preparedSignal.powSpectrum[i] = (
             Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
-            Math.pow(preparedSignal.complexSpectrum.imag[i], 2)) / (bufferSize / 2);
+            Math.pow(preparedSignal.complexSpectrum.imag[i], 2)) / (bufferSize);
     }
     return preparedSignal;
 };
@@ -324,9 +324,9 @@ function mffcCompute(args) {
     let loggedMelBands = new Float32Array(numFilters);
 
     for (let i = 0; i < loggedMelBands.length; i++) {
-        filtered[i] = new Float32Array(args.bufferSize / 4 + 1);
+        filtered[i] = new Float32Array(args.bufferSize / 2 + 1);
         loggedMelBands[i] = 0;
-        for (let j = 0; j < (args.bufferSize / 4 + 1); j++) {
+        for (let j = 0; j < (args.bufferSize / 2 + 1); j++) {
             //point-wise multiplication between power spectrum and filterbanks.
             filtered[i][j] = args.melFilterBank[i][j] * args.powSpectrum[j];
             //summing up all of the coefficients into one array
@@ -361,7 +361,7 @@ onmessage = function (msg) {
             sampleRate = msg.data.sampleRate
             bufferSize = msg.data.bufferSize
             discardFirstBand = msg.data.discardFirstBand
-            melFilterBank = createMelFilterBank(numFilters, sampleRate * 2, bufferSize / 2)
+            melFilterBank = createMelFilterBank(numFilters, sampleRate * 2, bufferSize)
             break
         case "process":
             mfcc(msg.data.audioFrame, sampleRate, bufferSize)
