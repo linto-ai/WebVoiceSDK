@@ -222,7 +222,7 @@ var prepareSignalWithSpectrum = function (signal, bufferSize) {
     for (var i = 0; i < bufferSize / 2 + 1; i++) {
         preparedSignal.powSpectrum[i] = (
             Math.pow(preparedSignal.complexSpectrum.real[i], 2) +
-            Math.pow(preparedSignal.complexSpectrum.imag[i], 2)) / (bufferSize);
+            Math.pow(preparedSignal.complexSpectrum.imag[i], 2));
     }
     return preparedSignal;
 };
