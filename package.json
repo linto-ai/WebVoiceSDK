@@ -1,6 +1,6 @@
 {
   "name": "@linto-ai/webvoicesdk",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Building blocks for voice-enabled applications in the browser",
   "author": "Damien Laine - LINAGORA",
   "keywords": [
@@ -34,10 +34,10 @@
   },
   "homepage": "https://github.com/linto-ai/WebVoiceSDK#readme",
   "devDependencies": {
-    "@tensorflow/tfjs": "^3.16.0",
-    "@tensorflow/tfjs-backend-cpu": "^3.16.0",
-    "@tensorflow/tfjs-backend-wasm": "^3.16.0",
-    "@tensorflow/tfjs-backend-webgl": "^3.16.0",
+    "@tensorflow/tfjs": "^3.18.0",
+    "@tensorflow/tfjs-backend-cpu": "^3.18.0",
+    "@tensorflow/tfjs-backend-wasm": "^3.18.0",
+    "@tensorflow/tfjs-backend-webgl": "^3.18.0",
     "parcel-bundler": "^1.12.5",
     "parcel-plugin-tensorflowjs-blob": "^1.0.0",
     "parcel-plugin-wasm-blob": "^1.0.0",
