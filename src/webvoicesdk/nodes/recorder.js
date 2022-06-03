@@ -20,31 +20,31 @@ function encodeWAV(samples, format, sampleRate, numChannels, bitDepth) {
     var blockAlign = numChannels * bytesPerSample
     var buffer = new ArrayBuffer(44 + samples.length * bytesPerSample)
     var view = new DataView(buffer)
-    /* RIFF identifier */
+        /* RIFF identifier */
     writeString(view, 0, 'RIFF')
-    /* RIFF chunk length */
+        /* RIFF chunk length */
     view.setUint32(4, 36 + samples.length * bytesPerSample, true)
-    /* RIFF type */
+        /* RIFF type */
     writeString(view, 8, 'WAVE')
-    /* format chunk identifier */
+        /* format chunk identifier */
     writeString(view, 12, 'fmt ')
-    /* format chunk length */
+        /* format chunk length */
     view.setUint32(16, 16, true)
-    /* sample format (raw) */
+        /* sample format (raw) */
     view.setUint16(20, format, true)
-    /* channel count */
+        /* channel count */
     view.setUint16(22, numChannels, true)
-    /* sample rate */
+        /* sample rate */
     view.setUint32(24, sampleRate, true)
-    /* byte rate (sample rate * block align) */
+        /* byte rate (sample rate * block align) */
     view.setUint32(28, sampleRate * blockAlign, true)
-    /* block align (channel count * bytes per sample) */
+        /* block align (channel count * bytes per sample) */
     view.setUint16(32, blockAlign, true)
-    /* bits per sample */
+        /* bits per sample */
     view.setUint16(34, bitDepth, true)
-    /* data chunk identifier */
+        /* data chunk identifier */
     writeString(view, 36, 'data')
-    /* data chunk length */
+        /* data chunk length */
     view.setUint32(40, samples.length * bytesPerSample, true)
     if (format === 1) { // Raw PCM
         floatTo16BitPCM(view, 44, samples)
@@ -86,7 +86,7 @@ function writeString(view, offset, string) {
     }
 }
 
-const handler = function (nodeEvent) {
+const handler = function(nodeEvent) {
     if (this.recOn) {
         if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
             for (const sample of nodeEvent.detail) this.rawBuffer.push(sample)
@@ -116,11 +116,11 @@ export default class recorder extends Node {
             this.rawBuffer = []
             this.context = new(window.AudioContext || window.webkitAudioContext)() //fix for Safari
         }
-        if (this.hookedOn.type == "featuresExtractor"){
+        if (this.hookedOn.type == "featuresExtractor") {
             this.features = []
             this.mfccBuffer = []
         }
-        if (this.hookedOn.type == "hotword"){
+        if (this.hookedOn.type == "hotword") {
             this.infers = []
         }
     }
@@ -141,14 +141,14 @@ export default class recorder extends Node {
         this.rawBuffer = []
     }
 
-    getBuffer(){
+    getBuffer() {
         return this.rawBuffer
     }
 
     play() {
         let replaySource = this.context.createBufferSource()
         replaySource.buffer = this.audioBuffer
-        // Playback default
+            // Playback default
         replaySource.connect(this.context.destination)
         replaySource.start(0)
     }
@@ -156,30 +156,32 @@ export default class recorder extends Node {
     getFile() {
         let url
         if (this.hookedOn.type == "mic" || this.hookedOn.type == "downSampler" || this.hookedOn.type == "speechPreemphaser") {
-            let wavFile = audioBufferToWav(this.audioBuffer)
-            // our final blob
+            let wavFile = this.getWavFile()
+                // our final blob
             this.blob = new Blob([wavFile], {
                 type: 'audio/wav'
             })
         }
-        if (this.hookedOn.type == "featuresExtractor"){
+        if (this.hookedOn.type == "featuresExtractor") {
             let featuresString = JSON.stringify(this.features)
-            this.blob = new Blob([featuresString],{type: 'application/json'})
+            this.blob = new Blob([featuresString], { type: 'application/json' })
         }
-        if (this.hookedOn.type == "hotword"){
+        if (this.hookedOn.type == "hotword") {
             let infersString = JSON.stringify(this.infers)
-            this.blob = new Blob([infersString],{type: 'application/json'})
+            this.blob = new Blob([infersString], { type: 'application/json' })
         }
         url = URL.createObjectURL(this.blob)
         return url
     }
-
-    punchIn(){
+    getWavFile() {
+        return audioBufferToWav(this.audioBuffer)
+    }
+    punchIn() {
         this.cleanBuffer()
         this.rec()
     }
 
-    punchOut(){
+    punchOut() {
         this.stopRec()
         this.cleanBuffer
         return this.getFile()
