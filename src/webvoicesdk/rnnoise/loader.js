@@ -1,4 +1,4 @@
-import * as wasm from '../../../node_modules/rnnoise-wasm/dist/rnnoise.wasm'
+import * as wasm from '../../vendor/rnnoise-wasm/dist/rnnoise.wasm'
 // slight modification from vendor file to enable loading of wasm from blob
 // compare with vendor file in ../rnnoise/loader.js
 
