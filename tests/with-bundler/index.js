@@ -112,7 +112,7 @@ document.getElementById("lintomodel").onclick = async () => {
 }
 
 document.getElementById("slinfoxmodel").onclick = async () => {
-    hotword.loadModel(hotword.availableModels["slinfox"])
+    hotword.loadModel(hotword.availableModels["multibot"])
 }
 
 document.getElementById("stop").onclick = async () => {

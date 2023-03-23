@@ -25,7 +25,7 @@ window.start = async function () {
     await speechPreemphaser.start(downSampler)
     await feat.start(speechPreemphaser)
     await hotword.start(feat, vad, 0.9)
-    await hotword.loadModel(hotword.availableModels["linto"])
+    await hotword.loadModel(hotword.availableModels["multibot"])
     document.getElementById("VADLed").setAttribute('style', 'display:inline-block;')
     vad.addEventListener("speakingStatus", VADHandler)
     hotword.addEventListener("hotword", HotwordHandler)
