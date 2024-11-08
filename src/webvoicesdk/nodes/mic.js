@@ -30,12 +30,13 @@ export default class Mic extends Node {
         }
     }
 
-    async start() {
+    async start(deviceId = null) {
         if (this.hookedOn) throw new NodeError(`Microphone is already started, call stop() first`)
         this.stream = await navigator.mediaDevices.getUserMedia({
             audio: {
                 channelCount: 1,
-                ...this.options.constraints
+                ...this.options.constraints,
+                deviceId
             },
         })
         this.hookedOn = true
@@ -72,16 +73,27 @@ export default class Mic extends Node {
 
     stop() {
         if (this.hookedOn) {
-            this.stream.getTracks().map((track) => {
-                return track.readyState === 'live' && track.kind === 'audio' ? track.stop() : false
-            })
+            
+            if(this.steam) {
+                this.stream.getTracks().map((track) => {
+                    return track.readyState === 'live' && track.kind === 'audio' ? track.stop() : false
+                })
+            }
+            
             this.pause()
             delete this.mediaStreamSource
             delete this.micFrameGenerator
-            this.audioContext.close().then(() => {
+            
+            if(this.audioContext) {
+                this.audioContext.close().then(() => {
+                    delete this.stream
+                    delete this.audioContext
+                })
+            } else {
                 delete this.stream
                 delete this.audioContext
-            })
+            }
+            
             this.hookedOn = null
         }
     }
