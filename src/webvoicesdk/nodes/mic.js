@@ -73,8 +73,7 @@ export default class Mic extends Node {
 
     stop() {
         if (this.hookedOn) {
-            
-            if(this.steam) {
+            if(this.stream) {
                 this.stream.getTracks().map((track) => {
                     return track.readyState === 'live' && track.kind === 'audio' ? track.stop() : false
                 })
