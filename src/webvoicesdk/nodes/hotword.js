@@ -1,5 +1,6 @@
 import Node from "../nodes/node.js";
 
+import HotwordWorker from "../workers/hotword.worker.js?worker"; // for bundle with vite -> to encapsulate tensorflow and wasm files
 const handler = function (mfcc) {
   if (this.mfccBuffer.length < this.mfccBufferSize) {
     this.mfccBuffer.push(mfcc.detail);
@@ -20,7 +21,10 @@ export default class HotWord extends Node {
 
   constructor() {
     super();
-    this.workerUrl = new URL("../workers/hotword.worker.js", import.meta.url);
+    // this.workerUrl = new URL(
+    //   "../workers/hotword.worker.js?worker&url",
+    //   import.meta.url,
+    // );
     this.mfccBuffer = []; // buffer to infer when filled with 30 mfcc. See handler
     this.handler = handler.bind(this);
     this.type = "hotword";
@@ -29,24 +33,22 @@ export default class HotWord extends Node {
   }
 
   startWorker() {
-    if (this.workerUrl) {
-      this.workerRuntime = new Worker(this.workerUrl, { type: "module" });
-      this.workerRuntime.onerror = (e) => {
-        console.error("Worker error:", e);
-      };
-      this.workerRuntime.onmessage = (event) => {
-        // Handle different message types from the worker
-        if (event.data.type === "hotword") {
-          this.dispatchEvent(
-            new CustomEvent(this.event, {
-              detail: event.data.word,
-            }),
-          );
-        } else if (event.data.type === "modelLoaded") {
-          this.dispatchEvent(new CustomEvent("modelLoaded"));
-        }
-      };
-    }
+    this.workerRuntime = new HotwordWorker();
+    this.workerRuntime.onerror = (e) => {
+      console.error("Worker error:", e);
+    };
+    this.workerRuntime.onmessage = (event) => {
+      // Handle different message types from the worker
+      if (event.data.type === "hotword") {
+        this.dispatchEvent(
+          new CustomEvent(this.event, {
+            detail: event.data.word,
+          }),
+        );
+      } else if (event.data.type === "modelLoaded") {
+        this.dispatchEvent(new CustomEvent("modelLoaded"));
+      }
+    };
   }
 
   //Optional VAD node to infer only if vad.speaking==true

@@ -18,22 +18,23 @@
     "mfcc",
     "features-exctraction"
   ],
-  "main": "src/webvoicesdk.js",
-  "module": "src/webvoicesdk.js",
+  "main": "./dist/webvoicesdk.js",
+  "module": "./dist/webvoicesdk.js",
   "exports": {
     ".": {
-      "import": "./src/webvoicesdk.js"
+      "import": "./dist/webvoicesdk.js"
     },
     "./hotwords/*": "./hotwords/*"
   },
   "files": [
-    "src",
-    "hotwords"
+    "dist",
+    "hotwords",
+    "src"
   ],
   "scripts": {
     "dev": "vite",
-    "test": "vite build && vite preview",
-    "build": "vite build"
+    "build": "vite build --mode lib",
+    "preview": "vite build && vite preview"
   },
   "repository": {
     "type": "git",
