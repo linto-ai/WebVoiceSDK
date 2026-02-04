@@ -56,8 +56,8 @@
         }
     },
     "devDependencies": {
-        "@tensorflow/tfjs": "^4.0.0",
-        "@tensorflow/tfjs-backend-wasm": "^4.0.0",
+        "@tensorflow/tfjs": "^3.21.0",
+        "@tensorflow/tfjs-backend-wasm": "^3.21.0",
         "vite": "^5.0.0"
     }
 }
