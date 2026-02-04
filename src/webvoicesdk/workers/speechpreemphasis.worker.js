@@ -1,14 +1,13 @@
+let lastFrameValue = 0
+let val
 
-onmessage = function (msg) {
+self.onmessage = function (msg) {
     switch (msg.data.method) {
         case "process":
             process(msg.data.audioFrame)
             break
     }
 }
-
-let lastFrameValue = 0
-let val
 
 function process(audioFrame) {
     let emphasedAudioFrame = []
@@ -21,5 +20,5 @@ function process(audioFrame) {
         emphasedAudioFrame.push(val)
     }
     lastFrameValue = audioFrame[audioFrame.length - 1]
-    postMessage(Float32Array.from(emphasedAudioFrame))
+    self.postMessage(Float32Array.from(emphasedAudioFrame))
 }

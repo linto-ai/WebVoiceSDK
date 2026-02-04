@@ -1,6 +1,7 @@
 {
     "name": "@linto-ai/webvoicesdk",
-    "version": "1.2.6",
+    "version": "2.0.0",
+    "type": "module",
     "description": "Building blocks for voice-enabled applications in the browser",
     "author": "Damien Laine - LINAGORA",
     "keywords": [
@@ -19,10 +20,19 @@
     ],
     "main": "src/webvoicesdk.js",
     "module": "src/webvoicesdk.js",
-    "browser": "dist/webVoiceSDK-linto.min.js",
+    "exports": {
+        ".": {
+            "import": "./src/webvoicesdk.js"
+        },
+        "./hotwords/*": "./hotwords/*"
+    },
+    "files": [
+        "src",
+        "hotwords"
+    ],
     "scripts": {
-        "build": "parcel build src/webvoicesdk.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js",
-        "test": "parcel tests/with-bundler/index.html --out-dir dev-build --log-level 4 --no-cache"
+        "dev": "vite",
+        "test": "vite build && vite preview"
     },
     "repository": {
         "type": "git",
@@ -33,17 +43,21 @@
         "url": "https://github.com/linto-ai/WebVoiceSDK/issues"
     },
     "homepage": "https://github.com/linto-ai/WebVoiceSDK#readme",
-    "devDependencies": {
-        "@tensorflow/tfjs": "^3.21.0",
-        "@tensorflow/tfjs-backend-cpu": "^3.21.0",
-        "@tensorflow/tfjs-backend-wasm": "^3.21.0",
-        "@tensorflow/tfjs-backend-webgl": "^3.21.0",
-        "parcel-bundler": "^1.12.5",
-        "parcel-plugin-tensorflowjs-blob": "^1.0.0",
-        "parcel-plugin-wasm-blob": "^1.0.0",
-        "parcel-plugin-worker-blob": "^1.0.0"
+    "peerDependencies": {
+        "@tensorflow/tfjs": "^3.21.0 || ^4.0.0",
+        "@tensorflow/tfjs-backend-wasm": "^3.21.0 || ^4.0.0"
     },
-    "browserslist": [
-        "since 2017-06"
-    ]
+    "peerDependenciesMeta": {
+        "@tensorflow/tfjs": {
+            "optional": true
+        },
+        "@tensorflow/tfjs-backend-wasm": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@tensorflow/tfjs": "^4.0.0",
+        "@tensorflow/tfjs-backend-wasm": "^4.0.0",
+        "vite": "^5.0.0"
+    }
 }

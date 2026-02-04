@@ -1,5 +1,4 @@
 import Node from '../nodes/node.js'
-import Worker from '../workers/downsampler.blob.js'
 
 const handler = function (nodeEvent) {
     this.workerRuntime.postMessage({
@@ -22,7 +21,7 @@ export default class DownSampler extends Node {
         Int16Convert = false
     } = {}) {
         super()
-        this.worker = Worker
+        this.workerUrl = new URL('../workers/downsampler.worker.js', import.meta.url)
         this.handler = handler.bind(this)
         this.type = "downSampler"
         this.event = "downSamplerFrame" //emitted

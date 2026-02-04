@@ -1,4 +1,4 @@
-/* 
+/*
 references :
 https://github.com/meyda/meyda
 https://github.com/nevosegal/fftjs
@@ -353,7 +353,7 @@ let numCoefs
 let discardFirstBand = true
 let bufferSize = 0
 
-onmessage = function (msg) {
+self.onmessage = function (msg) {
     switch (msg.data.method) {
         case "configure":
             numFilters = msg.data.numFilters
@@ -380,5 +380,5 @@ function mfcc(audioBuffer, sampleRate, bufferSize) {
     }
     let mfccs = mffcCompute(preparedObject)
     if (discardFirstBand) mfccs.shift()
-    postMessage(mfccs)
+    self.postMessage(mfccs)
 }

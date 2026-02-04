@@ -1,5 +1,4 @@
 import Node from '../nodes/node.js'
-import Worker from '../workers/speechpreemphasis.blob.js'
 
 const handler = function (nodeEvent) {
     this.workerRuntime.postMessage({
@@ -11,7 +10,7 @@ const handler = function (nodeEvent) {
 export default class SpeechPreemphaser extends Node {
     constructor() {
         super()
-        this.worker = Worker
+        this.workerUrl = new URL('../workers/speechpreemphasis.worker.js', import.meta.url)
         this.handler = handler.bind(this)
         this.type = "speechPreemphaser"
         this.event = "speechPreemphaserFrame" //emitted

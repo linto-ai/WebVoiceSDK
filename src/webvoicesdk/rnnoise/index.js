@@ -1,4 +1,4 @@
-import rnnoiseloader from './loader'
+import createRnnoiseModule from './loader.js'
 export const RNNOISE_SAMPLE_LENGTH = 480
 const RNNOISE_BUFFER_SIZE = RNNOISE_SAMPLE_LENGTH * 4
 
@@ -7,12 +7,12 @@ export class Rnnoise {
 
     constructor() {
         this.destroyed = false
-        this.init()
+        this.ready = this.init()
     }
 
     async init() {
         try {
-            this.wasmInterface = await rnnoiseloader() // vendor (jitsi meet) script that loads wasm file
+            this.wasmInterface = await createRnnoiseModule()
             this.wasmPcmInput = this.wasmInterface._malloc(RNNOISE_BUFFER_SIZE)
             if (!this.wasmPcmInput) throw Error('Failed to create wasm input memory buffer')
             this.wasmPcmOutput = this.wasmInterface._malloc(RNNOISE_BUFFER_SIZE)

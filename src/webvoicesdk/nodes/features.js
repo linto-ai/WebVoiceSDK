@@ -1,5 +1,4 @@
 import Node from '../nodes/node.js'
-import Worker from '../workers/features.blob.js'
 import NodeError from '../nodes/error.js'
 
 const handler = function (nodeEvent) {
@@ -31,7 +30,7 @@ export default class FeaturesExtractor extends Node {
         discardFirstBand = true
     } = {}) {
         super()
-        this.worker = Worker
+        this.workerUrl = new URL('../workers/features.worker.js', import.meta.url)
         this.handler = handler.bind(this)
         this.type = "featuresExtractor"
         this.event = "mfccFeatures" //emitted

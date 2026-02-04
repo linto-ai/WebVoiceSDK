@@ -4,7 +4,7 @@ let targetSampleRate
 let targetFrameSize
 let Int16Convert
 
-onmessage = function (msg) {
+self.onmessage = function (msg) {
     switch (msg.data.method) {
         case "configure":
             nativeSampleRate = msg.data.nativeSampleRate
@@ -19,8 +19,7 @@ onmessage = function (msg) {
 }
 
 function process(audioFrame) {
-    for (let sample of audioFrame)
-    {
+    for (let sample of audioFrame) {
         //binary 111111111111111, casts to 16Bit wav file spec
         Int16Convert ? inputBuffer.push(sample * 32767) : inputBuffer.push(sample)
     }
@@ -43,7 +42,6 @@ function process(audioFrame) {
             outputIndex++
         }
         inputBuffer = inputBuffer.slice(inputIndex)
-        postMessage(outputFrame)
+        self.postMessage(outputFrame)
     }
 }
-

@@ -6,7 +6,7 @@ import SpeechPreemphaser from './webvoicesdk/nodes/speechpreemphasis.js'
 import FeaturesExtractor from './webvoicesdk/nodes/features.js'
 import Hotword from './webvoicesdk/nodes/hotword.js'
 
-const webVoiceSDK = {
+export {
     DownSampler,
     Mic,
     SpeechPreemphaser,
@@ -16,5 +16,12 @@ const webVoiceSDK = {
     Recorder
 }
 
-window.webVoiceSDK = webVoiceSDK
-module.exports = webVoiceSDK
+export default {
+    DownSampler,
+    Mic,
+    SpeechPreemphaser,
+    Vad,
+    FeaturesExtractor,
+    Hotword,
+    Recorder
+}

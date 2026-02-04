@@ -65,13 +65,14 @@ export default class Vad extends Node {
         }
     }
 
-    start(node) {
+    async start(node) {
         this.wasmRuntime = new Rnnoise()
+        await this.wasmRuntime.ready
         this.bufferResidue = new Float32Array([])
         this.redemptionTimer = false
         this.activations = []
         this.speaking = false
-        super.start(node)
+        await super.start(node)
     }
 
     stop() {

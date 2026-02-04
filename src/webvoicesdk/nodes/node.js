@@ -16,8 +16,8 @@ export default class Node extends EventTarget {
     }
 
     startWorker() {
-        if (this.worker) {
-            this.workerRuntime = this.worker.init()
+        if (this.workerUrl) {
+            this.workerRuntime = new Worker(this.workerUrl, { type: 'module' })
             this.workerRuntime.onmessage = (event) => {
                 this.dispatchEvent(new CustomEvent(this.event, {
                     "detail": event.data
