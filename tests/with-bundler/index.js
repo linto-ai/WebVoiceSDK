@@ -1,7 +1,6 @@
 import webVoiceSDK from "../../src/webvoicesdk.js";
 
 const VADHandler = function (speakingEvent) {
-  console.log(speakingEvent);
   speakingEvent.detail
     ? (document.getElementById("VADLed").classList.add("led-red"),
       document.getElementById("VADLed").classList.remove("led-green"))
@@ -47,9 +46,9 @@ async function start() {
   await vad.start(mic);
   await speechPreemphaser.start(downSampler);
   await feat.start(speechPreemphaser);
-  //   await hotword.start(feat, vad, 0.9);
-  //   // Models are served from the public directory (hotwords/)
-  //   await hotword.loadModel("/linto/model.json");
+  await hotword.start(feat, vad, 0.9);
+  // Models are served from the public directory (hotwords/)
+  await hotword.loadModel("/linto/model.json");
   document
     .getElementById("VADLed")
     .setAttribute("style", "display:inline-block;");
