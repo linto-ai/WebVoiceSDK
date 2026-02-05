@@ -1,49 +1,66 @@
 {
-    "name": "@linto-ai/webvoicesdk",
-    "version": "1.2.6",
-    "description": "Building blocks for voice-enabled applications in the browser",
-    "author": "Damien Laine - LINAGORA",
-    "keywords": [
-        "speech-recognition",
-        "wake-word-detection",
-        "hotword",
-        "machine-learning",
-        "voice-commands",
-        "voice-activity-detection",
-        "voice-control",
-        "record-audio",
-        "voice-assistant",
-        "offline-speech-recognition",
-        "mfcc",
-        "features-exctraction"
-    ],
-    "main": "src/webvoicesdk.js",
-    "module": "src/webvoicesdk.js",
-    "browser": "dist/webVoiceSDK-linto.min.js",
-    "scripts": {
-        "build": "parcel build src/webvoicesdk.js --log-level 4 --no-cache --no-source-maps --detailed-report --out-file webVoiceSDK-linto.min.js",
-        "test": "parcel tests/with-bundler/index.html --out-dir dev-build --log-level 4 --no-cache"
+  "name": "@linto-ai/webvoicesdk",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Building blocks for voice-enabled applications in the browser",
+  "author": "Damien Laine - LINAGORA",
+  "keywords": [
+    "speech-recognition",
+    "wake-word-detection",
+    "hotword",
+    "machine-learning",
+    "voice-commands",
+    "voice-activity-detection",
+    "voice-control",
+    "record-audio",
+    "voice-assistant",
+    "offline-speech-recognition",
+    "mfcc",
+    "features-exctraction"
+  ],
+  "main": "./dist/webvoicesdk.es.js",
+  "module": "./dist/webvoicesdk.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/webvoicesdk.es.js",
+      "script": "./dist/webvoicesdk.min.js"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/linto-ai/WebVoiceSDK.git"
+    "./hotwords/*": "./hotwords/*"
+  },
+  "files": [
+    "dist",
+    "hotwords",
+    "src"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --mode lib",
+    "preview": "vite build && vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linto-ai/WebVoiceSDK.git"
+  },
+  "license": "AGPLV3",
+  "bugs": {
+    "url": "https://github.com/linto-ai/WebVoiceSDK/issues"
+  },
+  "homepage": "https://github.com/linto-ai/WebVoiceSDK#readme",
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^3.21.0 || ^4.0.0",
+    "@tensorflow/tfjs-backend-wasm": "^3.21.0 || ^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tensorflow/tfjs": {
+      "optional": true
     },
-    "license": "AGPLV3",
-    "bugs": {
-        "url": "https://github.com/linto-ai/WebVoiceSDK/issues"
-    },
-    "homepage": "https://github.com/linto-ai/WebVoiceSDK#readme",
-    "devDependencies": {
-        "@tensorflow/tfjs": "^3.21.0",
-        "@tensorflow/tfjs-backend-cpu": "^3.21.0",
-        "@tensorflow/tfjs-backend-wasm": "^3.21.0",
-        "@tensorflow/tfjs-backend-webgl": "^3.21.0",
-        "parcel-bundler": "^1.12.5",
-        "parcel-plugin-tensorflowjs-blob": "^1.0.0",
-        "parcel-plugin-wasm-blob": "^1.0.0",
-        "parcel-plugin-worker-blob": "^1.0.0"
-    },
-    "browserslist": [
-        "since 2017-06"
-    ]
+    "@tensorflow/tfjs-backend-wasm": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs": "^3.21.0",
+    "@tensorflow/tfjs-backend-wasm": "^3.21.0",
+    "vite": "^5.0.0"
+  }
 }
