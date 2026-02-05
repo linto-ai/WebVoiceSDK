@@ -1,27 +1,30 @@
-import Node from '../nodes/node.js'
+import Node from "../nodes/node.js"
 
 const handler = function (nodeEvent) {
-    this.workerRuntime.postMessage({
-        method: "process",
-        audioFrame: nodeEvent.detail
-    })
+  this.workerRuntime.postMessage({
+    method: "process",
+    audioFrame: nodeEvent.detail,
+  })
 }
 
 export default class SpeechPreemphaser extends Node {
-    constructor() {
-        super()
-        this.workerUrl = new URL('../workers/speechpreemphasis.worker.js', import.meta.url)
-        this.handler = handler.bind(this)
-        this.type = "speechPreemphaser"
-        this.event = "speechPreemphaserFrame" //emitted
-        this.hookableOnNodeTypes = ["mic","downSampler"]
-    }
+  constructor() {
+    super()
+    this.workerUrl = new URL(
+      "../workers/speechpreemphasis.worker.js",
+      import.meta.url,
+    )
+    this.handler = handler.bind(this)
+    this.type = "speechPreemphaser"
+    this.event = "speechPreemphaserFrame" //emitted
+    this.hookableOnNodeTypes = ["mic", "downSampler"]
+  }
 
-    async start(node){
-        await super.start(node)
-        this.options = {
-            sampleRate: node.options.sampleRate,
-            frameSize: node.options.frameSize
-        }
+  async start(node) {
+    await super.start(node)
+    this.options = {
+      sampleRate: node.options.sampleRate,
+      frameSize: node.options.frameSize,
     }
+  }
 }

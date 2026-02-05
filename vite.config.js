@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
-import { resolve } from "path";
+import { defineConfig } from "vite"
+import { resolve } from "path"
 
 export default defineConfig(({ mode }) => {
   // Build lib pour npm
@@ -10,8 +10,8 @@ export default defineConfig(({ mode }) => {
           entry: resolve(__dirname, "src/webvoicesdk.js"),
           name: "WebVoiceSDK",
           fileName: (format) => {
-            if (format === "iife") return "webvoicesdk.min.js";
-            return "webvoicesdk.es.js";
+            if (format === "iife") return "webvoicesdk.min.js"
+            return "webvoicesdk.es.js"
           },
           formats: ["es", "iife"],
         },
@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
           external: ["@tensorflow/tfjs", "@tensorflow/tfjs-backend-wasm"],
         },
       },
-    };
+    }
   }
 
   // Dev / test
@@ -33,5 +33,5 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: "../../dist",
     },
-  };
-});
+  }
+})
