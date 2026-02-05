@@ -22,7 +22,8 @@
   "module": "./dist/webvoicesdk.js",
   "exports": {
     ".": {
-      "import": "./dist/webvoicesdk.js"
+      "import": "./dist/webvoicesdk.es.js",
+      "script": "./dist/webvoicesdk.min.js"
     },
     "./hotwords/*": "./hotwords/*"
   },

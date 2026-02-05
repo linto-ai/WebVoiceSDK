@@ -9,7 +9,10 @@ export default defineConfig(({ mode }) => {
         lib: {
           entry: resolve(__dirname, "src/webvoicesdk.js"),
           name: "WebVoiceSDK",
-          fileName: "webvoicesdk",
+          fileName: (format) => {
+            if (format === "iife") return "webvoicesdk.min.js";
+            return "webvoicesdk.es.js";
+          },
           formats: ["es", "iife"],
         },
         outDir: "dist",
