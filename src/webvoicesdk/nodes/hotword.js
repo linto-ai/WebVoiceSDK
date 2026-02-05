@@ -21,10 +21,6 @@ export default class HotWord extends Node {
 
   constructor() {
     super();
-    // this.workerUrl = new URL(
-    //   "../workers/hotword.worker.js?worker&url",
-    //   import.meta.url,
-    // );
     this.mfccBuffer = []; // buffer to infer when filled with 30 mfcc. See handler
     this.handler = handler.bind(this);
     this.type = "hotword";
@@ -85,19 +81,16 @@ export default class HotWord extends Node {
       method: "GET",
     });
     const manifest = await manifestRequest.json();
-    console.log("hotword.js: manifest loaded");
     // Sets number of MFCC frames
     this.mfccBufferSize =
       manifest.modelTopology.model_config.config.layers[0].config.batch_input_shape[1];
 
     return new Promise((resolve) => {
       const onModelLoaded = () => {
-        console.log("hotword.js: model loaded");
         this.removeEventListener("modelLoaded", onModelLoaded);
         resolve();
       };
       this.addEventListener("modelLoaded", onModelLoaded);
-      console.log("hotword.js: loading model");
       this.workerRuntime.postMessage({
         method: "loadModel",
         modelUrl: modelUrl.toString(),

@@ -18,8 +18,8 @@
     "mfcc",
     "features-exctraction"
   ],
-  "main": "./dist/webvoicesdk.js",
-  "module": "./dist/webvoicesdk.js",
+  "main": "./dist/webvoicesdk.es.js",
+  "module": "./dist/webvoicesdk.es.js",
   "exports": {
     ".": {
       "import": "./dist/webvoicesdk.es.js",
